@@ -21,7 +21,7 @@ sudo apt install git
 sudo apt install ffmpeg
 sudo apt-get install vainfo
 
-git clone --recursive https://github.com/ChipsnMedia/vpu_vaapi.git
+git clone --recursive https://github.com/ChipsnMedia/vaapi.git
 #git clone https://github.com/intel/intel-vaapi-driver
 #git clone https://github.com/intel/libva.git
 cd libva
