@@ -1,0 +1,12 @@
+[submodule "libva"]
+	path = libva
+	url = https://github.com/ChipsnMedia/libva.git
+[submodule "media-driver"]
+	path = media-driver
+	url = https://github.com/ChipsnMedia/media-driver.git
+[submodule "libva-utils"]
+	path = libva-utils
+	url = https://github.com/ChipsnMedia/libva-utils.git
+[submodule "gmmlib"]
+	path = gmmlib
+	url = https://github.com/ChipsnMedia/gmmlib.git
