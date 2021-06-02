@@ -69,3 +69,10 @@ cd ..
 
 
 
+
+sudo apt install vainfo
+sudo apt install ffmpeg
+# to install ffmpeg 4.4 ( for av1 vaapi decoder ) if ffmpeg is 4.3 
+sudo add-apt-repository ppa:savoury1/ffmpeg4
+sudo apt full-upgrade
+ffmpeg -version
