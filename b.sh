@@ -1,38 +1,71 @@
+# refer ./media-driver/.github/ubuntu.yml
 
-sudo apt-get -qq update
-sudo apt-get install -y build-essential
-sudo apt-get install -y autoconf
-sudo apt-get install -y automake
-sudo apt-get install -y libtool
-sudo apt-get install -y m4
-sudo apt-get install -y lcov
-sudo apt-get install -y perl
-sudo apt-get install -y pkg-config
-sudo apt-get install -y libdrm-dev
-sudo apt-get install -y autoconf
-sudo apt-get install -y libegl1-mesa-dev
-sudo apt-get install -y libgl1-mesa-dev
-sudo apt-get install -y libwayland-dev
-sudo apt-get install -y libx11-dev
-sudo apt-get install -y libxext-dev
-sudo apt-get install -y libxfixes-dev
-sudo apt-get install -y intel-gpu-tools
-sudo apt install git
-sudo apt install ffmpeg
-sudo apt-get install vainfo
+# vaapi has media-driver, libva, gmmlib, 
+git clone --recurse-submodules https://github.com/ChipsnMedia/vaapi.git
+# if install toolchain base on clang12 job
+## echo "clang-12 missed in the image, installing from llvm"
+## echo "deb [trusted=yes] http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main" | sudo tee -a /etc/apt/sources.list
+## sudo apt-get update
+## sudo apt-get install -y --no-install-recommends clang-12
 
-git clone --recursive https://github.com/ChipsnMedia/vaapi.git
-#git clone https://github.com/intel/intel-vaapi-driver
-#git clone https://github.com/intel/libva.git
+# install toolchain base on gcc-10
+## nothing to do?
+
+# install prerequisites
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends \
+          cmake \
+          libdrm-dev \
+          libegl1-mesa-dev \
+          libgl1-mesa-dev \
+          libx11-dev \
+          libxext-dev \
+          libxfixes-dev \
+          libwayland-dev \
+          make \
+          build-essential \
+          autoconf \
+          automake \
+          libtool \
+          m4 \
+          pkg-config
+
+
+# print tools versions
+cmake --version
+#/usr/bin/clang-12 --version
+#/usr/bin/clang++-12 --version
+/usr/bin/gcc-10 --version
+/usr/bin/g++-10 --version
+
+
+# build libva
 cd libva
 ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
 make -j$(nproc)
 sudo make install
 cd ..
-cd intel-vaapi-driver
-#sudo make uninstall
-./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
-make -j$(nproc)
+
+# build gmmlib
+cd gmmlib
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu ..
+make VERBOSE=1 -j$(nproc)
 sudo make install
-make check
+cd ..
+cd ..
+
+# build media-driver
+cd media-driver
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu \
+    -DCMAKE_C_FLAGS_RELEASE="-O2 -Wformat -Wformat-security -Wall -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong" \
+    -DCMAKE_CXX_FLAGS_RELEASE="-O2 -Wformat -Wformat-security -Wall -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong" \
+    ..
+make VERBOSE=1 -j$(nproc)
+sudo make install
+cd ..
+cd ..
+
+
 
