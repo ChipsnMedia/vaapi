@@ -76,3 +76,11 @@ sudo apt install ffmpeg
 sudo add-apt-repository ppa:savoury1/ffmpeg4
 sudo apt full-upgrade
 ffmpeg -version
+
+
+# for conformance test env.
+sudo apt install python
+sudo apt install python3-pip
+pip install -U pytest
+export PATH="$PATH:/home/ta-ubuntu/.local/bin"
+pytest --version
