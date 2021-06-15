@@ -10,3 +10,6 @@
 [submodule "gmmlib"]
 	path = gmmlib
 	url = https://github.com/ChipsnMedia/gmmlib.git
+[submodule "vaapi-fits"]
+	path = vaapi-fits
+	url = https://github.com/intel/vaapi-fits.git
