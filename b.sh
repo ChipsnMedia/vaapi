@@ -79,8 +79,8 @@ ffmpeg -version
 
 
 # for conformance test env.
-sudo apt install python
+sudo apt install python3
 sudo apt install python3-pip
-pip install -U pytest
+pip3 install -U pytest
 export PATH="$PATH:/home/ta-ubuntu/.local/bin"
 pytest --version
