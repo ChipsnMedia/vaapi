@@ -67,7 +67,11 @@ sudo make install
 cd ..
 cd ..
 
-
+# build libva-utils
+cd libva-utils
+./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
+make -j$(nproc)
+sudo make install
 
 
 sudo apt install vainfo
@@ -77,6 +81,10 @@ sudo add-apt-repository ppa:savoury1/ffmpeg4
 sudo apt full-upgrade
 ffmpeg -version
 
+# for gstreamer
+sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+sudo apt install gstreamer1.0-vaapi
+
 
 # for conformance test env.
 sudo apt install python3
@@ -84,3 +92,5 @@ sudo apt install python3-pip
 pip3 install -U pytest
 export PATH="$PATH:/home/ta-ubuntu/.local/bin"
 pytest --version
+
+
