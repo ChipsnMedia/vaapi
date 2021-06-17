@@ -17,8 +17,10 @@ TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC = 1
 TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG = 2
 
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
+FFMPEG_LOG_LEVEL_STR="warning" # verbose
 
-STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x"]
+FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc"]
+STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_HighRes_720x576_r6009"]
 
 def get_f_name():
     return "[" + sys._getframe().f_back.f_code.co_name + "] "
@@ -158,6 +160,7 @@ def decode_vaapi_ffmpeg(file_name_list, enable_load_cnm_driver, enable_to_genera
 
 def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
     ret = False
+    is_es_stream = False
     stream_name = file_name_list[FNI_STREAM_NAME_IDX]
     va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
     if enable_vaapi:
@@ -165,28 +168,47 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
     else:
         output_name = file_name_list[FNI_OUTPUT_FILE_CMODEL]
 
-    try:
 
-        file_name = os.path.basename(stream_name)
-        file_dir = os.path.dirname(stream_name)
+    if enable_vaapi == False:
 
-        es_file_dir = file_dir + "/es"
-        if os.path.isdir(es_file_dir) == False:
-            os.mkdir(es_file_dir)
+        is_es_stream = False
+        for es_stream_ext in FILE_EXT_OF_ELEMENTARY_STREAM:
+            if es_stream_ext in stream_name:
+                is_es_stream = True
+                break
 
-        es_stream_name = es_file_dir + "/" + file_name + ".es" 
-        if stream_name.find(".mp4") == -1:
-            cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose  -i " + stream_name + " -vcodec copy -f h264 " + es_stream_name + " -y"
+        if is_es_stream == True:
+            es_stream_name = stream_name
+            print(get_f_name() + "skip to make es file = " + stream_name)
         else:
-            cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose  -i " + stream_name + " -vcodec copy -f h264 -vbsf h264_mp4toannexb " + es_stream_name + " -y"
+            try:
 
-        print(get_f_name() + "make es file cmd = " + cmdstr)
-        if os.system(cmdstr) == 0:
-            ret = True
+                file_name = os.path.basename(stream_name)
+                file_dir = os.path.dirname(stream_name)
 
-    except Exception as e:
-        print(get_f_name() + " Exception str=" + str(e))
-        pass
+                es_file_dir = file_dir + "/es"
+                if os.path.isdir(es_file_dir) == False:
+                    os.mkdir(es_file_dir)
+
+                es_stream_name = es_file_dir + "/" + file_name + ".es" 
+                if stream_name.find(".mp4") == -1:
+                    cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
+                else:
+                    if "avc_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -vbsf h264_mp4toannexb " + es_stream_name + " -y"
+                    elif "hevc_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -vbsf hevc_mp4toannexb " + es_stream_name + " -y"
+                    else:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
+                       
+
+                print(get_f_name() + "make es file cmd = " + cmdstr)
+                if os.system(cmdstr) == 0:
+                    ret = True
+
+            except Exception as e:
+                print(get_f_name() + " Exception str=" + str(e))
+                pass
 
     ret = False
 
