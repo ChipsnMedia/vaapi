@@ -19,7 +19,7 @@ TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG = 2
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
 FFMPEG_LOG_LEVEL_STR="warning" # verbose
 
-FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc"]
+FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf"]
 STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_HighRes_720x576_r6009"]
 
 def get_f_name():
@@ -59,19 +59,30 @@ def get_test_stream_list(stream_root):
     return test_stream_list
 
 def get_file_name_list(stream_name):
-    print("+" + get_f_name() + " ret=" + stream_name)
+    stream_name = os.path.abspath(stream_name)
+    print("+" + get_f_name() + " stream_name=" + stream_name)
     file_name_list=["","","","","","","","",""]
-    file_name = os.path.basename(stream_name)
-    file_dir = os.path.dirname(stream_name)
-    ivf_file_dir = file_dir + "/ivf"
-    if os.path.isdir(ivf_file_dir) == False:
-        os.mkdir(ivf_file_dir)
-    va_stream_name = ivf_file_dir + "/" + file_name + ".ivf" 
-    trace_file_from_libva = ivf_file_dir + "/" + file_name + ".trace.txt" 
+
+    try:
+        file_name = os.path.basename(stream_name)
+        file_dir = os.path.dirname(stream_name)
+        ivf_file_dir = file_dir + "/ivf"
+        if os.path.isdir(ivf_file_dir) == False:
+            os.mkdir(ivf_file_dir)
+        trace_file_from_libva_dir  = ivf_file_dir + "/libva_trace"
+        if os.path.isdir(trace_file_from_libva_dir) == False:
+            os.mkdir(trace_file_from_libva_dir)
     
-    yuv_file_dir = file_dir + "/yuv"
-    if os.path.isdir(yuv_file_dir) == False:
-        os.mkdir(yuv_file_dir)
+        yuv_file_dir = file_dir + "/yuv"
+        if os.path.isdir(yuv_file_dir) == False:
+            os.mkdir(yuv_file_dir)
+
+    except Exception as e:
+        print("+" + get_f_name() + " Exception str=" + str(e))
+        pass
+
+    va_stream_name = ivf_file_dir + "/" + file_name + ".ivf" 
+    trace_file_from_libva = trace_file_from_libva_dir + "/" + file_name + ".trace.txt" 
     output_file_ffmpeg = yuv_file_dir + "/" + file_name + ".vaapi.ffmpeg.yuv" 
     output_file_vaapi_ffmpeg = yuv_file_dir + "/" + file_name + ".cnm_vaapi.ffmpeg.yuv" 
     output_file_cmodel = yuv_file_dir + "/" + file_name + ".cmodel.yuv" 
@@ -192,12 +203,19 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
 
                 es_stream_name = es_file_dir + "/" + file_name + ".es" 
                 if stream_name.find(".mp4") == -1:
-                    cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
+                    if "avc_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f h264 " + es_stream_name + " -y"
+                    elif "hevc_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f hevc " + es_stream_name + " -y"
+                    elif "av1_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f av1 " + es_stream_name + " -y"
+                    else:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
                 else:
                     if "avc_dec" in codec_str:
-                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -vbsf h264_mp4toannexb " + es_stream_name + " -y"
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f h264 -vbsf h264_mp4toannexb " + es_stream_name + " -y"
                     elif "hevc_dec" in codec_str:
-                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -vbsf hevc_mp4toannexb " + es_stream_name + " -y"
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f hevc -vbsf hevc_mp4toannexb " + es_stream_name + " -y"
                     else:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
                        
@@ -215,7 +233,10 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
     if enable_vaapi == True:
         cmdstr = refc_file_path + " --codec " + codec_str + " --vaapi -i " + va_stream_name + " -o " + output_name 
     else:
-        cmdstr = refc_file_path + " -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+        if "av1_dec" in codec_str:
+            cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+        else:
+            cmdstr = refc_file_path + " -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
 
     print(get_f_name() + " " + cmdstr)
     try:

@@ -21,7 +21,14 @@ mkdir result
 
 # decoder
 
-  
+
+
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/DXVAContent/h264/ivf/H264formatChange_1920x1088_High_at_L4.1_1280x720_Main.264.ivf
+# /usr/local/bin/ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/h264/H264formatChange_1920x1088_High_at_L4.1_1280x720_Main.264 -f rawvideo -pix_fmt yuv420p /Stream/work/gregory/DXVAContent/h264/yuv/H264formatChange_1920x1088_High_at_L4.1_1280x720_Main.264.vaapi.ffmpeg.yuv -y
+
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/DXVAContent/h264/ivf/Rotate_180.mov.ivf
+
+# /usr/local/bin/ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/h264/Rotate_180.mov -f rawvideo -pix_fmt yuv420p /Stream/work/gregory/DXVAContent/h264/yuv/Rotate_180.mov.vaapi.ffmpeg.yuv -y 
 
 # export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/h264/Soccer_1280x720p_4mbps_30fps_Baseline_at_L3.1_8slices.MP4.ivf
 # ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/h264/Soccer_1280x720p_4mbps_30fps_Baseline_at_L3.1_8slices.MP4 /Stream/work/gregory/vastream/h264/Soccer_1280x720p_4mbps_30fps_Baseline_at_L3.1_8slices.MP4.yuv -y
@@ -44,6 +51,9 @@ mkdir result
 #export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/h264/Utraviolet.2006_x264_Clip00_2Ref.avi.ivf
 #ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/cnm/Utraviolet.2006_x264_Clip00_2Ref.avi /Stream/work/gregory/vastream/h264/Utraviolet.2006_x264_Clip00_2Ref.avi.yuv -y
 
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/hevc/MSHDRef_Texture_SkinTones_08_320x240p24f_lowlevel_main_fuzzed.hevc.ivf
+# ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/hevc/MSHDRef_Texture_SkinTones_08_320x240p24f_lowlevel_main_fuzzed.hevc /Stream/work/gregory/vastream/hevc/MSHDRef_Texture_SkinTones_08_320x240p24f_lowlevel_main_fuzzed.hevc.yuv -y
+
 # export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/hevc/hevc_AMP_A_Samsung_4.mp4.ivf
 # ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/cnm/AMP_A_Samsung_4.mp4 /Stream/work/gregory/vastream/hevc/hevc_AMP_A_Samsung_4.mp4.yuv -y
 
@@ -57,11 +67,16 @@ mkdir result
 ##ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/youtube_mp4/Balloons_426x240.mp4 /Stream/work/gregory/vastream/av1/Balloons_426x240.mp4.yuv -y
 #ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/youtube_mp4/Balloons_426x240.mp4 /Stream/work/gregory/vastream/av1/Balloons_426x240.mp4.yuv -y
 
+
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/av1/Main_8bits_450_HighRes_720x576_r6009.ivf.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/Main_8bits_450_HighRes_720x576_r6009.ivf /Stream/work/gregory/vastream/av1/Main_8bits_450_HighRes_720x576_r6009.ivf.yuv -y
+
 # export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/av1/Main_8bits_000_Intra_192x128_r6009.ivf.ivf
-# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/Allegro_AV1_Syntax_Main_8bits/Main_8bits_000_Intra_192x128_r6009.ivf /Stream/work/gregory/vastream/av1/Main_8bits_000_Intra_192x128_r6009.ivf.yuv -y
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/Main_8bits_000_Intra_192x128_r6009.ivf /Stream/work/gregory/vastream/av1/Main_8bits_000_Intra_192x128_r6009.ivf.yuv -y
 
 # export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/av1/Main_8bits_047_Inter_192x128_r6009.ivf.ivf
-# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/Allegro_AV1_Syntax_Main_8bits/Main_8bits_047_Inter_192x128_r6009.ivf /Stream/work/gregory/vastream/av1/Main_8bits_047_Inter_192x128_r6009.ivf.yuv -y
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/Main_8bits_047_Inter_192x128_r6009.ivf /Stream/work/gregory/vastream/av1/Main_8bits_047_Inter_192x128_r6009.ivf.yuv -y
+
 # encoder : Encode with H.264 at good constant quality: input.mp4를 software로 nv12 format으로 디코딩해서 hw encoder로 qp18로 인코딩한다.
 #ffmpeg -vaapi_device /dev/dri/renderD128 -i /Stream/work/vastream/AIR_320x240_264.avi -vf 'format=nv12,hwupload' -c:v h264_vaapi -qp 18 ./result/output_qp18.mp4
 
