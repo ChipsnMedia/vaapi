@@ -9,7 +9,9 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "args": ["--codec=hevc_dec", "--input=/Stream/work/gregory/DXVAContent/hevc/Allegro_HEVC_Main10_MT51_INTRA_02_192x200@60Hz_1.5.bin"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/tests"
         }
     ]
 }

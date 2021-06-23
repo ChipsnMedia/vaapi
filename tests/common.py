@@ -19,7 +19,7 @@ TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG = 2
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
 FFMPEG_LOG_LEVEL_STR="warning" # verbose
 
-FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf"]
+FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf", ".bin"]
 STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_HighRes_720x576_r6009"]
 
 def get_f_name():
