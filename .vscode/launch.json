@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["--codec=hevc_dec", "--input=/Stream/work/gregory/DXVAContent/hevc/Allegro_HEVC_Main10_MT51_INTRA_02_192x200@60Hz_1.5.bin"],
+            "args": ["--codec=av1_dec", "--input=/Stream/work/gregory/DXVAContent/av1/Main_8bits_000_Intra_192x128_r6009.ivf"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/tests"
         }
