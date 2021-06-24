@@ -144,6 +144,7 @@ def decode_vaapi_ffmpeg(file_name_list, enable_load_cnm_driver, enable_to_genera
         output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG]
         
     os.putenv("LIBVA_DRIVERS_PATH", "/usr/lib/x86_64-linux-gnu/dri")
+    # os.putenv("LIBVA_DRIVERS_PATH", "/home/ta-ubuntu/Users/gregory/vaapi/media-driver/build/media_driver")
     os.system("echo $LIBVA_DRIVERS_PATH")
 
     if enable_load_cnm_driver == True:
@@ -162,6 +163,12 @@ def decode_vaapi_ffmpeg(file_name_list, enable_load_cnm_driver, enable_to_genera
     try:
         if os.system(cmdstr) == 0:
             ret = True
+
+        if ret == True:
+            if enable_to_generate_va_bistream == True:
+                if os.path.isfile(va_stream_name) == False:
+                    print(get_f_name() + "va_stream is not generated, " + va_stream_name)
+                    ret = False
     except Exception as e:
         print(get_f_name() + " Exception str=" + str(e))
         pass
