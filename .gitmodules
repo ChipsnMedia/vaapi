@@ -13,3 +13,9 @@
 [submodule "vaapi-fits"]
 	path = vaapi-fits
 	url = https://github.com/ChipsnMedia/vaapi-fits.git
+[submodule "gst-build"]
+	path = gst-build
+	url = https://github.com/ChipsnMedia/gst-build.git
+[submodule "FFmpeg"]
+	path = FFmpeg
+	url = https://github.com/ChipsnMedia/FFmpeg.git
