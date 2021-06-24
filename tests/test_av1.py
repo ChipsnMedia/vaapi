@@ -11,7 +11,7 @@ def test_av1_streams(stream_name):
     ret = False
     print("+" + get_f_name() + " stream_name=" + stream_name)
     file_name_list = get_file_name_list(stream_name)
-    ret = decode_vaapi_ffmpeg(file_name_list, False, True)
+    ret = decode_vaapi_ffmpeg(file_name_list, True)
     assert ret == True
     ret = decode_cnm_ref_c(REFC_FILE_PATH_av1, CODEC_STR_av1, file_name_list, False)
     assert ret == True
@@ -27,7 +27,7 @@ def test_av1_streams(stream_name):
     # print("-" + get_f_name() + " TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC ret=" + str(ret))
     # assert ret == True
 
-    # ret = decode_vaapi_ffmpeg(file_name_list, True, False)
+    # ret = decode_vaapi_ffmpeg(file_name_list, False)
     # assert ret == True
     # ret = compare_output(file_name_list, TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG)
     # print("-" + get_f_name() + " TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG ret=" + str(ret))

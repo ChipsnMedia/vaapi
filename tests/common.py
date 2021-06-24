@@ -15,7 +15,9 @@ FNI_TRACE_FILE_FROM_LIBVA = 7 # trace file from libva
 TC_COMPARE_REFC_AND_VAAPI_REFC = 0
 TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC = 1
 TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG = 2
-
+MY_LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri"
+# MY_LIBVA_DRIVERS_PATH = "/home/ta-ubuntu/Users/gregory/vaapi/media-driver/build/media_driver"
+MY_LIBVA_DRIVER_NAME = "iHD"
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
 FFMPEG_LOG_LEVEL_STR="warning" # verbose
 
@@ -108,9 +110,9 @@ def decode_vaapi_app(file_name_list, enable_vaapi):
     va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
     output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_APP]
 
-    # os.putenv("LIBVA_DRIVERS_PATH", "/usr/lib/x86_64-linux-gnu/dri") os.system("echo $LIBVA_DRIVERS_PATH")
+    # os.putenv("LIBVA_DRIVERS_PATH", MY_LIBVA_DRIVERS_PATH) os.system("echo $LIBVA_DRIVERS_PATH")
 
-    # os.putenv("LIBVA_DRIVER_NAME", "iHD")
+    # os.putenv("LIBVA_DRIVER_NAME", MY_LIBVA_DRIVER_NAME)
     # os.system("echo $LIBVA_DRIVER_NAME")
 
     # os.putenv("LIBVA_TRACE", "./result/va_trace.txt")
@@ -132,25 +134,18 @@ def decode_vaapi_app(file_name_list, enable_vaapi):
     # print("af." + cmdstr + ", result is" + str(ret))
     return ret
 
-def decode_vaapi_ffmpeg(file_name_list, enable_load_cnm_driver, enable_to_generate_va_bistream):
+def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
 
     ret = False 
     stream_name = file_name_list[FNI_STREAM_NAME_IDX]
     va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
     trace_file_name = file_name_list[FNI_TRACE_FILE_FROM_LIBVA]
-    if enable_load_cnm_driver == True:
-        output_name = file_name_list[FNI_OUTPUT_FILE_CNM_VAAPI_FFMPEG]
-    else:
-        output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG]
+    output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG]
         
-    os.putenv("LIBVA_DRIVERS_PATH", "/usr/lib/x86_64-linux-gnu/dri")
-    # os.putenv("LIBVA_DRIVERS_PATH", "/home/ta-ubuntu/Users/gregory/vaapi/media-driver/build/media_driver")
+    os.putenv("LIBVA_DRIVERS_PATH", MY_LIBVA_DRIVERS_PATH)
     os.system("echo $LIBVA_DRIVERS_PATH")
 
-    if enable_load_cnm_driver == True:
-        os.putenv("LIBVA_DRIVER_NAME", "iVPU")
-    else:
-        os.putenv("LIBVA_DRIVER_NAME", "iHD")
+    os.putenv("LIBVA_DRIVER_NAME", MY_LIBVA_DRIVER_NAME)
     os.putenv("LIBVA_TRACE", trace_file_name)
     os.system("echo $LIBVA_TRACE")
     if enable_to_generate_va_bistream == True:
@@ -276,4 +271,76 @@ def compare_output(file_name_list, test_case):
     except Exception as e:
         print("compare_output Exception str=" + str(e))
         pass
+    return ret
+
+def execute_libvautils():
+    ret = False
+    os.putenv("LIBVA_DRIVERS_PATH", MY_LIBVA_DRIVERS_PATH)
+    os.system("echo $LIBVA_DRIVERS_PATH")
+    os.putenv("LIBVA_DRIVER_NAME", MY_LIBVA_DRIVER_NAME) 
+        
+    cmdstr = "test_va_api"
+       
+    print(get_f_name() + " " + cmdstr)
+    try:
+        if os.system(cmdstr) == 0:
+            ret = True
+
+    except Exception as e:
+        print(get_f_name() + " Exception str=" + str(e))
+        pass
+
+    print(get_f_name() + "result is " + str(ret))
+    return ret
+
+def execute_vaapifits():
+    ret = False
+    os.putenv("LIBVA_DRIVERS_PATH", MY_LIBVA_DRIVERS_PATH)
+    os.system("echo $LIBVA_DRIVERS_PATH")
+    os.putenv("LIBVA_DRIVER_NAME", MY_LIBVA_DRIVER_NAME) 
+
+    org_path = os.path.abspath("./")
+    try:
+        abs_path = os.path.abspath("../gst-build/")
+        os.chdir(abs_path)
+        cmdstr = "./gst-env.py --only-environment"
+        print(get_f_name() + " " + cmdstr)
+        os.system(cmdstr)
+    except Exception as e:
+        print(get_f_name() + " Exception str=" + str(e))
+        pass
+    os.chdir(org_path)
+    os.system("echo $GST_PLUGIN_PATH")
+
+    os.putenv("GST_VAAPI_ALL_DRIVERS", "1") 
+
+    abs_path = os.path.abspath("../vaapi-fits")
+    os.chdir(abs_path)
+
+    cmdstr = "./vaapi-fits run test/gst-vaapi --platform KBL"
+       
+    print(get_f_name() + " " + cmdstr)
+    try:
+        if os.system(cmdstr) == 0:
+            ret = True
+
+    except Exception as e:
+        print(get_f_name() + " Exception str=" + str(e))
+        pass
+
+    print(get_f_name() + "result is " + str(ret))
+
+    cmdstr = "./vaapi-fits run test/ffmpeg-vaapi --platform KBL"
+       
+    print(get_f_name() + " " + cmdstr)
+    try:
+        if os.system(cmdstr) == 0:
+            ret = True
+
+    except Exception as e:
+        print(get_f_name() + " Exception str=" + str(e))
+        pass
+
+    os.chdir(org_path)
+    print(get_f_name() + "result is " + str(ret))
     return ret

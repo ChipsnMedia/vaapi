@@ -88,10 +88,15 @@ cd ./gst-build/builddir
 ninja devenv # set some env variables to use this build in default
 cd ..
 export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
+export GST_VAAPI_ALL_DRIVERS=1 
 gst-inspect-1.0 vaapi
 
 # gtest of libva-utils
 # test_va_api | grep FAIL
 
 # for libva-fits
-# 
+# Run only gst-vaapi test cases on iHD driver for KBL platform
+export GST_VAAPI_ALL_DRIVERS=1 
+./vaapi-fits list
+# ./vaapi-fits run test/gst-vaapi --platform KBL
+# ./vaapi-fits run test/ffmpeg-vaapi --platform KBL

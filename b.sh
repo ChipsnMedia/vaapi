@@ -1,6 +1,8 @@
 # refer ./media-driver/.github/ubuntu.yml
 
 # vaapi has media-driver, libva, gmmlib, 
+sudo apt install git git-lfs &&  git lfs install ## vaapi-fits Git Large File Storage (Git LFS) to track the assets.tbz2 file. Therefore, you will need to install Git LFS before cloning this repository to your local system.
+ 
 git clone --recurse-submodules https://github.com/ChipsnMedia/vaapi.git
 # git submodule update  # try if there is no all files in submodule.
 # if install toolchain base on clang12 job
@@ -80,7 +82,7 @@ sudo apt install vainfo
 cd FFmpeg
 ./configure --disable-x86asm
 make
-sudo make install
+sudo make install # install ffmpeg binary to /usr/local/bin/ffmpeg
 which ffmpeg
 ffmpeg -version
 cd ..
@@ -90,7 +92,7 @@ sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-buil
 sudo apt-get install flex bison libz-dev
 
 pip3 install --user meson
-export PATH="/home/ta/.local/bin:$PATH"
+export PATH="/home/ta-ubuntu/.local/bin:$PATH"
 
 cd gst-build
 git checkout -b 1.19.1
@@ -100,10 +102,21 @@ cd builddir
 ninja
 ninja devenv # set some env variables to use this build in default
 cd ..
+export GST_VAAPI_ALL_DRIVERS=1 
+which gst-inspect-1.0 
+gst-inspect-1.0 vaapi
 cd ..
 
 
-# for conformance test env.
+#for vaapi-fits
+cd vaapi-fits
+sudo apt install git-lfs  ## This project uses Git Large File Storage (Git LFS) to track the assets.tbz2 file. Therefore, you will need to install Git LFS before cloning this repository to your local system.
+git lfs install 
+sudo pip3 install -r requirements.txt
+./vaapi-fits list
+
+
+# for CNM conformance test env.
 sudo apt install python3
 sudo apt install python3-pip
 pip3 install -U pytest
