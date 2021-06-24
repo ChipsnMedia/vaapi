@@ -83,7 +83,15 @@ mkdir result
 # encoder : Hardware-only transcode to H.264 at 2Mbps CBR: input.mp4를 hardware로 decoding해서 enocder hardware로 바로 넘기고(YUV buffer 생성없이) hardware encoder로 2Mbps CBR로 인코딩한다.
 #ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -i /Stream/work/vastream/AIR_320x240_264.avi -c:v h264_vaapi -b:v 2M -maxrate 2M ./result/output_2Mbps.mp4
 
-
+# gstreamer
+cd ./gst-build/builddir
+ninja devenv # set some env variables to use this build in default
+cd ..
+export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
+gst-inspect-1.0 vaapi
 
 # gtest of libva-utils
 # test_va_api | grep FAIL
+
+# for libva-fits
+# 

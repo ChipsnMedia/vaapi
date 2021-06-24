@@ -2,9 +2,8 @@
 import pytest
 from common import*
 
-
 STREAM_ROOT_av1 = "/Stream/work/gregory/DXVAContent/av1"
-REFC_FILE_PATH_av1 ="../../TRY_WAVE517-E_REL_v1.9.9_VAAPI/design/ref_c/bin/Linux/av1_dec"
+REFC_FILE_PATH_av1 = "../../TRY_WAVE517-E_REL_v1.9.9_VAAPI/design/ref_c/bin/Linux/av1_dec"
 CODEC_STR_av1 = "av1_dec"
 
 @pytest.mark.parametrize("stream_name", get_test_stream_list(STREAM_ROOT_av1))
@@ -45,3 +44,5 @@ def test_av1_streams(stream_name):
 
 # if __name__ == '__main__':
 #     main()
+
+

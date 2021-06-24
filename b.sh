@@ -2,6 +2,7 @@
 
 # vaapi has media-driver, libva, gmmlib, 
 git clone --recurse-submodules https://github.com/ChipsnMedia/vaapi.git
+# git submodule update  # try if there is no all files in submodule.
 # if install toolchain base on clang12 job
 ## echo "clang-12 missed in the image, installing from llvm"
 ## echo "deb [trusted=yes] http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main" | sudo tee -a /etc/apt/sources.list
@@ -75,15 +76,31 @@ sudo make install
 
 
 sudo apt install vainfo
-sudo apt install ffmpeg
-# to install ffmpeg 4.4 ( for av1 vaapi decoder ) if ffmpeg is 4.3 
-sudo add-apt-repository ppa:savoury1/ffmpeg4
-sudo apt full-upgrade
+#build ffmpeg 4.4
+cd FFmpeg
+./configure --disable-x86asm
+make
+sudo make install
+which ffmpeg
 ffmpeg -version
+cd ..
 
 # for gstreamer
-sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
-sudo apt install gstreamer1.0-vaapi
+sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-build
+sudo apt-get install flex bison libz-dev
+
+pip3 install --user meson
+export PATH="/home/ta/.local/bin:$PATH"
+
+cd gst-build
+git checkout -b 1.19.1
+# modify gst-build/meson_options.txt to option('vaapi', type : 'feature', value : 'enabled')
+meson builddir 
+cd builddir
+ninja
+ninja devenv # set some env variables to use this build in default
+cd ..
+cd ..
 
 
 # for conformance test env.
