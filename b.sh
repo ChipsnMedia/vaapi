@@ -1,4 +1,26 @@
-# refer ./media-driver/.github/ubuntu.yml
+
+
+# Build and Install libvpuapi library and vpu kernel-mode driver and VPU FW in C&M libvpuapi package(cnm-wave517-libvpuapi_v5.5.72_rSVN_REVISON.tar.gz)
+#copy cnm-wave517-libvpuapi_v5.5.72_rSVN_REVISON.tar.gz file from FTP to this folder
+
+#extract C&M libvpuapi package (cnm-wave517-libvpuapi_v5.5.72_rSVN_REVISON.tar.gz
+tar -xvzf cnm-wave517-libvpuapi_v5.5.72_r1111.tar.gz
+
+cd wave517_dec_pvric_nommf_mthread_v5.5.72_vaapi/
+
+#build libvauapi package
+make -f libvpuapi.mak PRODUCT=WAVE517 clean 
+make -f libvpuapi.mak PRODUCT=WAVE517 clean 
+
+#install libvpuapi headers and so file and VPU FW to system devenv
+#the bellow command will copy libvpuapi header file to /usr/local/include/ and ibvpuapi.so file and VPU fw bin file to  /usr/local/lib/ 
+make -f libvpuapi.mak PRODUCT=WAVE517 install 
+
+#build vpu kernel driver
+cd vdi/linux/driver
+make
+#install vpu kernel driver
+./load.sh
 
 # vaapi has media-driver, libva, gmmlib, 
 sudo apt install git git-lfs &&  git lfs install ## vaapi-fits Git Large File Storage (Git LFS) to track the assets.tbz2 file. Therefore, you will need to install Git LFS before cloning this repository to your local system.
@@ -44,6 +66,7 @@ cmake --version
 
 # build libva
 cd libva
+git checkout master
 ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
 make -j$(nproc)
 sudo make install
@@ -51,6 +74,7 @@ cd ..
 
 # build gmmlib
 cd gmmlib
+git checkout master
 mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu ..
 make VERBOSE=1 -j$(nproc)
@@ -60,6 +84,7 @@ cd ..
 
 # build media-driver
 cd media-driver
+git checkout master
 mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu \
     -DCMAKE_C_FLAGS_RELEASE="-O2 -Wformat -Wformat-security -Wall -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong" \
@@ -72,6 +97,7 @@ cd ..
 
 # build libva-utils
 cd libva-utils
+git checkout master
 ./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
 make -j$(nproc)
 sudo make install
@@ -80,6 +106,7 @@ sudo make install
 sudo apt install vainfo
 #build ffmpeg 4.4
 cd FFmpeg
+git checkout master
 ./configure --disable-x86asm
 make
 sudo make install # install ffmpeg binary to /usr/local/bin/ffmpeg
@@ -95,7 +122,7 @@ pip3 install --user meson
 export PATH="/home/ta-ubuntu/.local/bin:$PATH"
 
 cd gst-build
-git checkout -b 1.19.1
+git checkout 1.19.1
 # modify gst-build/meson_options.txt to option('vaapi', type : 'feature', value : 'enabled')
 meson builddir 
 cd builddir
@@ -110,6 +137,7 @@ cd ..
 
 #for vaapi-fits
 cd vaapi-fits
+git checkout master
 sudo apt install git-lfs  ## This project uses Git Large File Storage (Git LFS) to track the assets.tbz2 file. Therefore, you will need to install Git LFS before cloning this repository to your local system.
 git lfs install 
 sudo pip3 install -r requirements.txt

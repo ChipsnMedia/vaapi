@@ -2,19 +2,18 @@
 import sys
 import os
 import filecmp
-
+CNM_REFC_TEST = False
 FNI_STREAM_NAME_IDX = 0
 FNI_VA_STREAM_NAME_IDX = 1
-FNI_OUTPUT_FILE_VAAPI_FFMPEG = 2 # decoded by ffmpeg without cnm vaapi driver(the default vaapi driver)
-FNI_OUTPUT_FILE_CNM_VAAPI_FFMPEG = 3 # decoded by ffmpeg with cnm vaapi driver 
-FNI_OUTPUT_FILE_CMODEL = 4 # decoded by c-model using es stream
-FNI_OUTPUT_FILE_VAAPI_CMODEL = 5 # decoded by vaapi c-model using va bitstream
-FNI_OUTPUT_FILE_VAAPI_APP = 6 # decoded by test app on fpga using va bitstream
-FNI_TRACE_FILE_FROM_LIBVA = 7 # trace file from libva
+FNI_OUTPUT_FILE_VAAPI_FFMPEG = 2 # decoded by ffmpeg 
+FNI_OUTPUT_FILE_CMODEL = 3 # decoded by c-model using es stream
+FNI_OUTPUT_FILE_VAAPI_CMODEL = 4 # decoded by vaapi c-model using va bitstream for CNM internel
+FNI_OUTPUT_FILE_VAAPI_APP = 5 # decoded by test app on fpga using va bitstream for CNM internel
+FNI_TRACE_FILE_FROM_LIBVA = 6 # trace file from libva
 
-TC_COMPARE_REFC_AND_VAAPI_REFC = 0
-TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC = 1
-TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG = 2
+TC_COMPARE_VAAPI_FFMPEG_AND_REFC = 0
+TC_COMPARE_REFC_AND_VAAPI_REFC = 1 # for CNM internel 
+TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC = 2 # for CNM internel
 MY_LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri"
 # MY_LIBVA_DRIVERS_PATH = "/home/ta-ubuntu/Users/gregory/vaapi/media-driver/build/media_driver"
 MY_LIBVA_DRIVER_NAME = "iHD"
@@ -86,7 +85,6 @@ def get_file_name_list(stream_name):
     va_stream_name = ivf_file_dir + "/" + file_name + ".ivf" 
     trace_file_from_libva = trace_file_from_libva_dir + "/" + file_name + ".trace.txt" 
     output_file_ffmpeg = yuv_file_dir + "/" + file_name + ".vaapi.ffmpeg.yuv" 
-    output_file_vaapi_ffmpeg = yuv_file_dir + "/" + file_name + ".cnm_vaapi.ffmpeg.yuv" 
     output_file_cmodel = yuv_file_dir + "/" + file_name + ".cmodel.yuv" 
     output_file_vaapi_cmodel = yuv_file_dir + "/" + file_name + ".vaapi.cmodel.yuv" 
     output_file_vaapi_app = yuv_file_dir + "/" + file_name + ".vaapi.app.yuv" 
@@ -94,7 +92,6 @@ def get_file_name_list(stream_name):
     file_name_list[FNI_STREAM_NAME_IDX] = stream_name
     file_name_list[FNI_VA_STREAM_NAME_IDX] = va_stream_name
     file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG] = output_file_ffmpeg
-    file_name_list[FNI_OUTPUT_FILE_CNM_VAAPI_FFMPEG] = output_file_vaapi_ffmpeg
     file_name_list[FNI_OUTPUT_FILE_CMODEL] = output_file_cmodel
     file_name_list[FNI_OUTPUT_FILE_VAAPI_CMODEL] = output_file_vaapi_cmodel
     file_name_list[FNI_OUTPUT_FILE_VAAPI_APP] = output_file_vaapi_app
@@ -171,7 +168,7 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
     print(get_f_name() + "result is " + str(ret))
     return ret
 
-def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
+def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, display_reorder):
     ret = False
     is_es_stream = False
     stream_name = file_name_list[FNI_STREAM_NAME_IDX]
@@ -211,6 +208,8 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f hevc " + es_stream_name + " -y"
                     elif "av1_dec" in codec_str:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f av1 " + es_stream_name + " -y"
+                    elif "vp9_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f ivf " + es_stream_name + " -y"
                     else:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
                 else:
@@ -235,10 +234,20 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
     if enable_vaapi == True:
         cmdstr = refc_file_path + " --codec " + codec_str + " --vaapi -i " + va_stream_name + " -o " + output_name 
     else:
-        if "av1_dec" in codec_str:
-            cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+        if display_reorder == False:
+            if "av1_dec" in codec_str:
+                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+            elif "vp9_dec" in codec_str:
+                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+            else:
+                cmdstr = refc_file_path + " -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
         else:
-            cmdstr = refc_file_path + " -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+            if "av1_dec" in codec_str:
+                cmdstr = refc_file_path + " --ivf -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+            elif "vp9_dec" in codec_str:
+                cmdstr = refc_file_path + " --ivf -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+            else:
+                cmdstr = refc_file_path + " -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
 
     print(get_f_name() + " " + cmdstr)
     try:
@@ -259,9 +268,9 @@ def compare_output(file_name_list, test_case):
     elif test_case == TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC:
         golden = file_name_list[FNI_OUTPUT_FILE_VAAPI_CMODEL]
         compare = file_name_list[FNI_OUTPUT_FILE_VAAPI_APP]
-    elif test_case == TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG:
-        golden = file_name_list[FNI_OUTPUT_FILE_VAAPI_CMODEL]
-        compare = file_name_list[FNI_OUTPUT_FILE_CNM_VAAPI_FFMPEG]
+    elif test_case == TC_COMPARE_VAAPI_FFMPEG_AND_REFC:
+        golden = file_name_list[FNI_OUTPUT_FILE_CMODEL]
+        compare = file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG]
     else:
         print(get_f_name() + " no test case")
         return ret

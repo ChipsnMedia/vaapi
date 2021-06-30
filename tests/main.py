@@ -1,8 +1,7 @@
 import getopt
 from common import*
 
-VERBOSE_MODE = False
-REFC_FILE_ROOT="../../TRY_WAVE517-E_REL_v1.9.9_VAAPI/design/ref_c/bin/Linux"
+REFC_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.72_vaapi"
 
 def test_streams(codec_str, input_file_name):
     print("+" + get_f_name() + " input_file_name=" + input_file_name + ",  codec_str=" + codec_str)
@@ -22,34 +21,41 @@ def test_streams(codec_str, input_file_name):
         return False
 
     file_name_list = get_file_name_list(stream_name)
-    ret = decode_vaapi_ffmpeg(file_name_list, False, True)
-    if ret == False:
-        print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
-        return False
+    if CNM_REFC_TEST == True:
+        ret = decode_vaapi_ffmpeg(file_name_list, True)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
+            return False
 
-    ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False)
-    if ret == False:
-        print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
-        return False
-    ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, True)
-    if ret == False:
-        print("+" + get_f_name() + " fail to decode_cnm_ref_c with vaapi mode")
-        return False
-    ret = compare_output(file_name_list, TC_COMPARE_REFC_AND_VAAPI_REFC)
-    print("-" + get_f_name() + " TC_COMPARE_REFC_AND_VAAPI_REFC ret=" + str(ret))
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, True, False)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_cnm_ref_c with vaapi mode")
+            return False
+
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, False)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
+            return False
+
+        ret = compare_output(file_name_list, TC_COMPARE_REFC_AND_VAAPI_REFC)
+        print("-" + get_f_name() + " TC_COMPARE_REFC_AND_VAAPI_REFC ret=" + str(ret))
+
+    else:
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, True)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
+            return False
+
+        ret = decode_vaapi_ffmpeg(file_name_list, False)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
+            return False
+
+        ret = compare_output(file_name_list, TC_COMPARE_VAAPI_FFMPEG_AND_REFC)
+        print("-" + get_f_name() + " TC_COMPARE_VAAPI_FFMPEG_AND_REFC ret=" + str(ret))
+
+
     return ret
-
-    # ret = decode_vaapi_app(file_name_list)
-    # assert ret == True
-    # ret = compare_output(file_name_list, TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC)
-    # print("-" + get_f_name() + " TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC ret=" + str(ret))
-    # assert ret == True
-
-    # ret = decode_vaapi_ffmpeg(file_name_list, True, False)
-    # assert ret == True
-    # ret = compare_output(file_name_list, TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG)
-    # print("-" + get_f_name() + " TC_COMPARE_VAAPI_FFMPEG_AND_CNM_VAAPI_FFMPEG ret=" + str(ret))
-    # assert ret == True
 
 def usage():
     print("usage requred")
