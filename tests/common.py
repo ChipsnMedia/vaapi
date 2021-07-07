@@ -2,7 +2,7 @@
 import sys
 import os
 import filecmp
-CNM_REFC_TEST = False 
+CNM_REFC_TEST = False
 FNI_STREAM_NAME_IDX = 0
 FNI_VA_STREAM_NAME_IDX = 1
 FNI_OUTPUT_FILE_VAAPI_FFMPEG = 2 # decoded by ffmpeg 
@@ -168,7 +168,7 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
     print(get_f_name() + "result is " + str(ret))
     return ret
 
-def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, display_reorder):
+def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
     ret = False
     is_es_stream = False
     stream_name = file_name_list[FNI_STREAM_NAME_IDX]
@@ -232,20 +232,20 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, di
     if enable_vaapi == True:
         cmdstr = refc_file_path + " --codec " + codec_str + " --vaapi -i " + va_stream_name + " -o " + output_name 
     else:
-        if display_reorder == False:
+        if CNM_REFC_TEST == True:
             if "av1_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o "  + output_name + ".disp.yuv"
+                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o "  + output_name
             elif "vp9_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name + ".disp.yuv" 
+                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name
             else:
-                cmdstr = refc_file_path + " -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name + ".disp.yuv"
+                cmdstr = refc_file_path + " -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name
         else:
             if "av1_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+                cmdstr = refc_file_path + " --ivf --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
             elif "vp9_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+                cmdstr = refc_file_path + " --ivf --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
             else:
-                cmdstr = refc_file_path + " -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+                cmdstr = refc_file_path + " --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
 
     print(get_f_name() + " " + cmdstr)
     try:
@@ -254,18 +254,6 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, di
     except Exception as e:
         print(get_f_name() + " Exception str=" + str(e))
         pass
-
-    if ret == True:
-        if enable_vaapi == False:
-            if display_reorder == False: # this case dec_rec.yuv is more compatiable with vaapi result becuase dec_rec.yuv includes a frame that should be decoded and but shouldn't be display.
-                cmdstr = "mv -f dec_rec.yuv " + output_name
-                print(get_f_name() + " " + cmdstr)
-                try:
-                    if os.system(cmdstr) == 0:
-                        ret = True
-                except Exception as e:
-                    print(get_f_name() + " Exception str=" + str(e))
-                    pass
 
     print(get_f_name() + "result is " + str(ret))
     return ret

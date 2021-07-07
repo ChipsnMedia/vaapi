@@ -16,23 +16,23 @@ def test_av1_streams(stream_name):
         ret = decode_vaapi_ffmpeg(file_name_list, True)
         assert ret == True
 
-        ret = decode_cnm_ref_c(REFC_FILE_PATH_av1, CODEC_STR_av1, file_name_list, False, False)
+        ret = decode_cnm_ref_c(REFC_FILE_PATH_av1, CODEC_STR_av1, file_name_list, False)
         assert ret == True
 
-        ret = decode_cnm_ref_c(REFC_FILE_PATH_av1, CODEC_STR_av1, file_name_list, True, False)
+        ret = decode_cnm_ref_c(REFC_FILE_PATH_av1, CODEC_STR_av1, file_name_list, True)
         assert ret == True
 
         ret = compare_output(file_name_list, TC_COMPARE_REFC_AND_VAAPI_REFC)
         print("-" + get_f_name() + " TC_COMPARE_REFC_AND_VAAPI_REFC ret=" + str(ret))
     else:
-        ret = decode_cnm_ref_c(REFC_FILE_PATH_av1, CODEC_STR_av1, file_name_list, False, True)
+        ret = decode_cnm_ref_c(REFC_FILE_PATH_av1, CODEC_STR_av1, file_name_list, False)
         assert ret == True
 
         ret = decode_vaapi_ffmpeg(file_name_list, False)
         assert ret == True
 
         ret = compare_output(file_name_list, TC_COMPARE_VAAPI_FFMPEG_AND_REFC)
-        print("-" + get_f_name() + " TC_COMPARE_REFC_AND_VAAPI_REFC ret=" + str(ret))
+        print("-" + get_f_name() + " TC_COMPARE_VAAPI_FFMPEG_AND_REFC ret=" + str(ret))
 
     assert ret == True
 

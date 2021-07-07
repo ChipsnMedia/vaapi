@@ -27,12 +27,12 @@ def test_streams(codec_str, input_file_name):
             print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
             return False
 
-        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, True, False)
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, True)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_cnm_ref_c with vaapi mode")
             return False
 
-        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, False)
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
             return False
@@ -41,7 +41,7 @@ def test_streams(codec_str, input_file_name):
         print("-" + get_f_name() + " TC_COMPARE_REFC_AND_VAAPI_REFC ret=" + str(ret))
 
     else:
-        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, True)
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
             return False
