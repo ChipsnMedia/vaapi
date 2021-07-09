@@ -8,13 +8,14 @@ groups ${USER}
 # newgrp render
 
 export LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
+# export LIBVA_DRIVERS_PATH=/home/ta-ubuntu/Users/gregory/vaapi/media-driver/build/media_driver
+
 export LIBVA_DRIVER_NAME=iHD
 # export LIBVA_DRIVER_NAME=i965  # for gstreamer-vaapi v1.14.5
 export LIBVA_MESSAGING_LEVEL=2
 export LIBVA_TRACE=./result/va_trace.txt
 vainfo
-export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
-gst-inspect-1.0 vaapi
+
 rm -rf result
 mkdir result
 
@@ -84,9 +85,9 @@ mkdir result
 #ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -i /Stream/work/vastream/AIR_320x240_264.avi -c:v h264_vaapi -b:v 2M -maxrate 2M ./result/output_2Mbps.mp4
 
 # gstreamer
-cd ./gst-build/builddir
-ninja devenv # set some env variables to use this build in default
-cd ..
+# cd ./gst-build/builddir
+# ninja devenv # set some env variables to use this build in default
+# cd ..
 export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
 export GST_VAAPI_ALL_DRIVERS=1 
 gst-inspect-1.0 vaapi
@@ -96,7 +97,7 @@ gst-inspect-1.0 vaapi
 
 # for libva-fits
 # Run only gst-vaapi test cases on iHD driver for KBL platform
-export GST_VAAPI_ALL_DRIVERS=1 
-./vaapi-fits list
+# export GST_VAAPI_ALL_DRIVERS=1 
+# ./vaapi-fits list
 # ./vaapi-fits run test/gst-vaapi --platform KBL
 # ./vaapi-fits run test/ffmpeg-vaapi --platform KBL

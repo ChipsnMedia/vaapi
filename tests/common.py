@@ -15,7 +15,6 @@ TC_COMPARE_VAAPI_FFMPEG_AND_REFC = 0
 TC_COMPARE_REFC_AND_VAAPI_REFC = 1 # for CNM internel 
 TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC = 2 # for CNM internel
 MY_LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri"
-# MY_LIBVA_DRIVERS_PATH = "/home/ta-ubuntu/Users/gregory/vaapi/media-driver/build/media_driver"
 MY_LIBVA_DRIVER_NAME = "iHD"
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
 FFMPEG_LOG_LEVEL_STR="warning" # verbose
@@ -100,36 +99,6 @@ def get_file_name_list(stream_name):
     print(file_name_list)
     return  file_name_list
 
-def decode_vaapi_app(file_name_list, enable_vaapi):
-
-    ret = False 
-    stream_name = file_name_list[FNI_STREAM_NAME_IDX]
-    va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
-    output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_APP]
-
-    # os.putenv("LIBVA_DRIVERS_PATH", MY_LIBVA_DRIVERS_PATH) os.system("echo $LIBVA_DRIVERS_PATH")
-
-    # os.putenv("LIBVA_DRIVER_NAME", MY_LIBVA_DRIVER_NAME)
-    # os.system("echo $LIBVA_DRIVER_NAME")
-
-    # os.putenv("LIBVA_TRACE", "./result/va_trace.txt")
-    # os.system("echo $LIBVA_TRACE")
-
-    # os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
-    # os.system("echo $LIBVA_VA_BITSTREAM")
-
-    # cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i " + stream_name + " -f rawvideo -pix_fmt yuv420p " + output_name + " -y"
-    # # cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose  -i " + stream_name + " -f rawvideo -pix_fmt yuv420p " + output_name + " -y"
-    # print("bf." + cmdstr + ", result is" + str(ret))
-    # try:
-
-    #     if os.system(cmdstr) == 0:
-    #         ret = True
-    # except Exception as e:
-    #     print("decode_vaapi_ffmpeg Exception str=" + str(e))
-    #     pass
-    # print("af." + cmdstr + ", result is" + str(ret))
-    return ret
 
 def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
 
@@ -150,7 +119,7 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
 	    os.system("echo $LIBVA_VA_BITSTREAM")
         
     cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i " + stream_name + " -f rawvideo -pix_fmt yuv420p " + output_name + " -y"
-       
+    
     print(get_f_name() + " " + cmdstr)
     try:
         if os.system(cmdstr) == 0:
@@ -220,6 +189,10 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
                        
 
                 print(get_f_name() + "make es file cmd = " + cmdstr)
+                # disable HW acceleration
+                os.putenv("LIBVA_DRIVERS_PATH", "")
+                os.putenv("LIBVA_DRIVER_NAME", "")
+
                 if os.system(cmdstr) == 0:
                     ret = True
 
