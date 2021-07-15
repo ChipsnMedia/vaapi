@@ -10,11 +10,20 @@ groups ${USER}
 # newgrp render
 
 export LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
+<<<<<<< HEAD
 # export LIBVA_DRIVERS_PATH=/home/ta/vaapi_prj/vaapi/media-driver/build/media_driver
+=======
+# export LIBVA_DRIVERS_PATH=/home/ta-ubuntu/Users/gregory/vaapi/media-driver/build/media_driver
+
+>>>>>>> 318e629e5ef5e6b600451e4d38f5fab921de2275
 export LIBVA_DRIVER_NAME=iHD
 # export LIBVA_DRIVER_NAME=i965  # for gstreamer-vaapi v1.14.5
 export LIBVA_MESSAGING_LEVEL=2
 vainfo
+<<<<<<< HEAD
+=======
+
+>>>>>>> 318e629e5ef5e6b600451e4d38f5fab921de2275
 rm -rf result
 mkdir result
 
@@ -90,6 +99,7 @@ mkdir result
 # gstreamer
 # cd ./gst-build/builddir
 # ninja devenv # set some env variables to use this build in default
+<<<<<<< HEAD
 # pwd
 # cd ..
 # cd ..
@@ -97,6 +107,12 @@ mkdir result
 # export GST_VAAPI_ALL_DRIVERS=1 
 # export LIBVA_MESSAGING_LEVEL=2
 # gst-inspect-1.0 vaapi
+=======
+# cd ..
+export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
+export GST_VAAPI_ALL_DRIVERS=1 
+gst-inspect-1.0 vaapi
+>>>>>>> 318e629e5ef5e6b600451e4d38f5fab921de2275
 
 # gtest of libva-utils
 # test_va_api | grep FAIL
@@ -105,6 +121,7 @@ test_va_api > test_vaapi.txt
 # for libva-fits
 # Run only gst-vaapi test cases on iHD driver for KBL platform
 # export GST_VAAPI_ALL_DRIVERS=1 
+<<<<<<< HEAD
 # export VAAPI_FITS_CONFIG_FILE=./config/vpu
 # cd vaapi-fits
 # #  ./vaapi-fits list | grep test/gst-vaapi
@@ -117,3 +134,8 @@ test_va_api > test_vaapi.txt
 # #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform BXT
 # cd ..
 
+=======
+# ./vaapi-fits list
+# ./vaapi-fits run test/gst-vaapi --platform KBL
+# ./vaapi-fits run test/ffmpeg-vaapi --platform KBL
+>>>>>>> 318e629e5ef5e6b600451e4d38f5fab921de2275
