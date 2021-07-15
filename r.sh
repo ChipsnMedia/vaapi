@@ -1,5 +1,7 @@
 
 
+export PATH="$PATH:/home/ta/.local/bin"
+
 #Configuring permissions
 stat -c "%G" /dev/dri/render*
 groups ${USER}
@@ -8,13 +10,11 @@ groups ${USER}
 # newgrp render
 
 export LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
+# export LIBVA_DRIVERS_PATH=/home/ta/vaapi_prj/vaapi/media-driver/build/media_driver
 export LIBVA_DRIVER_NAME=iHD
 # export LIBVA_DRIVER_NAME=i965  # for gstreamer-vaapi v1.14.5
 export LIBVA_MESSAGING_LEVEL=2
-export LIBVA_TRACE=./result/va_trace.txt
 vainfo
-export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
-gst-inspect-1.0 vaapi
 rm -rf result
 mkdir result
 
@@ -78,25 +78,42 @@ mkdir result
 # ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/Main_8bits_047_Inter_192x128_r6009.ivf /Stream/work/gregory/vastream/av1/Main_8bits_047_Inter_192x128_r6009.ivf.yuv -y
 
 # encoder : Encode with H.264 at good constant quality: input.mp4를 software로 nv12 format으로 디코딩해서 hw encoder로 qp18로 인코딩한다.
-#ffmpeg -vaapi_device /dev/dri/renderD128 -i /Stream/work/vastream/AIR_320x240_264.avi -vf 'format=nv12,hwupload' -c:v h264_vaapi -qp 18 ./result/output_qp18.mp4
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/enc/AIR_320x240_264.output.mp4.ivf.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/enc/AIR_320x240_264.output.mp4.ivf
+# export LIBVA_TRACE_SURFACE=/Stream/work/gregory/vastream/enc/AIR_320x240_264.output.mp4.ivf.enc.yuv
+# ffmpeg -vaapi_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/enc/AIR_320x240_264.input.avi -vf 'format=nv12,hwupload' -c:v h264_vaapi -qp 18 /Stream/work/gregory/vastream/enc/AIR_320x240_264.output.mp4 -y
+
 
 # encoder : Hardware-only transcode to H.264 at 2Mbps CBR: input.mp4를 hardware로 decoding해서 enocder hardware로 바로 넘기고(YUV buffer 생성없이) hardware encoder로 2Mbps CBR로 인코딩한다.
 #ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -i /Stream/work/vastream/AIR_320x240_264.avi -c:v h264_vaapi -b:v 2M -maxrate 2M ./result/output_2Mbps.mp4
 
 # gstreamer
-cd ./gst-build/builddir
-ninja devenv # set some env variables to use this build in default
-cd ..
-export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
-export GST_VAAPI_ALL_DRIVERS=1 
-gst-inspect-1.0 vaapi
+# cd ./gst-build/builddir
+# ninja devenv # set some env variables to use this build in default
+# pwd
+# cd ..
+# cd ..
+# export GST_DEBUG=2 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
+# export GST_VAAPI_ALL_DRIVERS=1 
+# export LIBVA_MESSAGING_LEVEL=2
+# gst-inspect-1.0 vaapi
 
 # gtest of libva-utils
 # test_va_api | grep FAIL
+test_va_api > test_vaapi.txt
 
 # for libva-fits
 # Run only gst-vaapi test cases on iHD driver for KBL platform
-export GST_VAAPI_ALL_DRIVERS=1 
-./vaapi-fits list
-# ./vaapi-fits run test/gst-vaapi --platform KBL
-# ./vaapi-fits run test/ffmpeg-vaapi --platform KBL
+# export GST_VAAPI_ALL_DRIVERS=1 
+# export VAAPI_FITS_CONFIG_FILE=./config/vpu
+# cd vaapi-fits
+# #  ./vaapi-fits list | grep test/gst-vaapi
+# #  ./vaapi-fits list | grep test/ffmpeg-vaapi
+#  ./vaapi-fits run test/gst-vaapi/decode --platform BXT
+# #  ./vaapi-fits run test/gst-vaapi/encode --platform BXT
+# #  ./vaapi-fits run test/gst-vaapi/transcode --platform BXT 
+#  ./vaapi-fits run test/ffmpeg-vaapi/decode --platform BXT 
+# #  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform BXT 
+# #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform BXT
+# cd ..
+

@@ -98,7 +98,7 @@ cd ..
 # build libva-utils
 cd libva-utils
 git checkout master
-./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
+./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu CXXFLAGS="-DCNM_VPUAPI_INTERFACE_PROFILE_ENTRYPOINT"
 make -j$(nproc)
 sudo make install
 
@@ -115,24 +115,30 @@ ffmpeg -version
 cd ..
 
 # for gstreamer
-sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-build
-sudo apt-get install flex bison libz-dev
 
-pip3 install --user meson
-export PATH="/home/ta-ubuntu/.local/bin:$PATH"
+sudo apt install gstreamer1.0-vaapi
 
-cd gst-build
-git checkout 1.19.1
-# modify gst-build/meson_options.txt to option('vaapi', type : 'feature', value : 'enabled')
-meson builddir 
-cd builddir
-ninja
-ninja devenv # set some env variables to use this build in default
-cd ..
 export GST_VAAPI_ALL_DRIVERS=1 
 which gst-inspect-1.0 
 gst-inspect-1.0 vaapi
-cd ..
+
+# sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-build
+# sudo apt-get install flex bison libz-dev
+
+# pip3 install --user meson
+# export PATH="$HOME/.local/bin:$PATH"
+
+# cd gst-build
+# git checkout origin/1.19.1
+# # modify gst-build/meson_options.txt to option('vaapi', type : 'feature', value : 'enabled')
+# meson builddir 
+# ninja -C builddir
+# ninja -C builddir devenv # set some env variables to use this build in default
+# export GST_VAAPI_ALL_DRIVERS=1 
+# which gst-inspect-1.0 
+# gst-inspect-1.0 vaapi
+# cd ..
+
 
 
 #for vaapi-fits
