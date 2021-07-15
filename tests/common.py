@@ -149,7 +149,7 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
 	    os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
 	    os.system("echo $LIBVA_VA_BITSTREAM")
         
-    cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i " + stream_name + " -f rawvideo -pix_fmt yuv420p " + output_name + " -y"
+    cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -i " + stream_name + " -f rawvideo -pix_fmt yuv420p -vsync passthrough " + output_name + " -y"
        
     print(get_f_name() + " " + cmdstr)
     try:
@@ -310,25 +310,25 @@ def execute_vaapifits():
     os.system("echo $LIBVA_DRIVERS_PATH")
     os.putenv("LIBVA_DRIVER_NAME", MY_LIBVA_DRIVER_NAME) 
 
+    os.putenv("GST_VAAPI_ALL_DRIVERS", "1") 
+    os.putenv("VAAPI_FITS_CONFIG_FILE", "./config/vpu") 
+    # os.putenv("GST_DEBUG", "2") 
+    # os.putenv("LIBVA_MESSAGING_LEVEL", "2") 
+    # os.system("echo $GST_PLUGIN_PATH")
+
     org_path = os.path.abspath("./")
     try:
-        abs_path = os.path.abspath("../gst-build/")
-        os.chdir(abs_path)
-        cmdstr = "./gst-env.py --only-environment"
+        cmdstr = "gst-inspect-1.0 vaapi"
         print(get_f_name() + " " + cmdstr)
         os.system(cmdstr)
     except Exception as e:
         print(get_f_name() + " Exception str=" + str(e))
         pass
-    os.chdir(org_path)
-    os.system("echo $GST_PLUGIN_PATH")
-
-    os.putenv("GST_VAAPI_ALL_DRIVERS", "1") 
 
     abs_path = os.path.abspath("../vaapi-fits")
     os.chdir(abs_path)
 
-    cmdstr = "./vaapi-fits run test/gst-vaapi --platform KBL"
+    cmdstr = "./vaapi-fits run test/gst-vaapi/decode --platform BXT"
        
     print(get_f_name() + " " + cmdstr)
     try:
@@ -341,7 +341,7 @@ def execute_vaapifits():
 
     print(get_f_name() + "result is " + str(ret))
 
-    cmdstr = "./vaapi-fits run test/ffmpeg-vaapi --platform KBL"
+    cmdstr = "./vaapi-fits run test/ffmpeg-vaapi/decode --platform BXT"
        
     print(get_f_name() + " " + cmdstr)
     try:
