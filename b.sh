@@ -98,7 +98,7 @@ cd ..
 # build libva-utils
 cd libva-utils
 git checkout master
-./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu CXXFLAGS="-DCNM_VPUAPI_INTERFACE_PROFILE_ENTRYPOINT"
+./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
 make -j$(nproc)
 sudo make install
 
