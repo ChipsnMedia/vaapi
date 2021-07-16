@@ -118,13 +118,8 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
 	    os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
 	    os.system("echo $LIBVA_VA_BITSTREAM")
         
-<<<<<<< HEAD
     cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -i " + stream_name + " -f rawvideo -pix_fmt yuv420p -vsync passthrough " + output_name + " -y"
        
-=======
-    cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i " + stream_name + " -f rawvideo -pix_fmt yuv420p " + output_name + " -y"
-    
->>>>>>> 318e629e5ef5e6b600451e4d38f5fab921de2275
     print(get_f_name() + " " + cmdstr)
     try:
         if os.system(cmdstr) == 0:
@@ -306,7 +301,7 @@ def execute_vaapifits():
     abs_path = os.path.abspath("../vaapi-fits")
     os.chdir(abs_path)
 
-    cmdstr = "./vaapi-fits run test/gst-vaapi/decode --platform BXT"
+    cmdstr = "./vaapi-fits run test/gst-vaapi/decode --platform KBL --call-timeout 6000000"
        
     print(get_f_name() + " " + cmdstr)
     try:
@@ -319,7 +314,7 @@ def execute_vaapifits():
 
     print(get_f_name() + "result is " + str(ret))
 
-    cmdstr = "./vaapi-fits run test/ffmpeg-vaapi/decode --platform BXT"
+    cmdstr = "./vaapi-fits run test/ffmpeg-vaapi/decode --platform KBL --call-timeout 6000000"
        
     print(get_f_name() + " " + cmdstr)
     try:

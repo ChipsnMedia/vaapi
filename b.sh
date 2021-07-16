@@ -122,8 +122,7 @@ export GST_VAAPI_ALL_DRIVERS=1
 which gst-inspect-1.0 
 gst-inspect-1.0 vaapi
 
-# sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-build
-# sudo apt-get install flex bison libz-dev
+# sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-build libaom-dev flex bison libz-dev
 
 # pip3 install --user meson
 # export PATH="$HOME/.local/bin:$PATH"

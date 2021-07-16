@@ -1,4 +1,4 @@
-export PATH="$PATH:/home/ta/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 # test all pythone script in this folder
 # pytest -s
 # pytest h264 stream only

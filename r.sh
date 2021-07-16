@@ -94,20 +94,20 @@ mkdir result
 # gst-inspect-1.0 vaapi
 
 # gtest of libva-utils
-test_va_api > test_va_api_result.txt
+#test_va_api > test_va_api_result.txt
 
 # for libva-fits
 # Run only gst-vaapi test cases on iHD driver for KBL platform
-# export GST_VAAPI_ALL_DRIVERS=1 
-# export VAAPI_FITS_CONFIG_FILE=./config/vpu
-# cd vaapi-fits
+export GST_VAAPI_ALL_DRIVERS=1 
+export VAAPI_FITS_CONFIG_FILE=./config/vpu
+cd vaapi-fits
 # #  ./vaapi-fits list | grep test/gst-vaapi
-# #  ./vaapi-fits list | grep test/ffmpeg-vaapi
-#  ./vaapi-fits -v run test/gst-vaapi/decode --platform BXT
-# #  ./vaapi-fits run test/gst-vaapi/encode --platform BXT
-# #  ./vaapi-fits run test/gst-vaapi/transcode --platform BXT 
-#  ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform BXT 
-# #  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform BXT 
-# #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform BXT
-# cd ..
-
+#  ./vaapi-fits list | grep test/ffmpeg-vaapi
+#  ./vaapi-fits -v run test/gst-vaapi/decode --platform KBL --call-timeout 6000000
+# #  ./vaapi-fits run test/gst-vaapi/encode --platform KBL --call-timeout 6000000
+# #  ./vaapi-fits run test/gst-vaapi/transcode --platform KBL --call-timeout 6000000 
+ ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform KBL --call-timeout 6000000
+# #  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform KBL --call-timeout 6000000 
+# #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform KBL --call-timeout 6000000
+# ffmpeg -hwaccel vaapi -init_hw_device vaapi=hw:/dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -filter_hw_device hw -v verbose -i /home/ta-ubuntu/Users/gregory/vaapi/vaapi-fits/assets/hevc/1080p.h265 -pix_fmt nv12 -f rawvideo -vsync passthrough -autoscale 0 -vframes 10 -y /home/ta-ubuntu/Users/gregory/vaapi/vaapi-fits/results/21a6baa6-e608-11eb-bcd5-71868998e81e_0/_0.test.ffmpeg-vaapi.decode.hevc/default/1080p_1920x1080_NV12.yu
+cd ..
