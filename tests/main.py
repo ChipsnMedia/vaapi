@@ -21,7 +21,7 @@ def test_streams(codec_str, input_file_name):
         return False
 
     file_name_list = get_file_name_list(stream_name)
-    if CNM_REFC_TEST == True:
+    if get_refc_test_mode() == True:
         ret = decode_vaapi_ffmpeg(file_name_list, True)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
@@ -65,11 +65,10 @@ def main():
     INPUT_FILE = "/Stream/work/gregory/DXVAContent/cnm/AIR_320x240_264.avi"
     CODEC_STR = "avc_dec"
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hc:i:",["help", "codec=", "input="])
+        opts, args = getopt.getopt(sys.argv[1:],"hc:i:r",["help", "codec=", "input=", "refc_test"])
     except getopt.GetoptError as err:
         print("Error in argument, reason=" + str(err))
         sys.exit(2)
-
     for o, a in opts:
         if o in ("-h", "--help"):
             usage()
@@ -81,7 +80,8 @@ def main():
             if os.path.isfile(INPUT_FILE) == False:
                 print("can't open input file = " + INPUT_FILE)
                 return
-
+        elif o in ("-c", "--refc_test"):
+            set_refc_test_mode()
         else:
             assert False, "unhandled option"
 

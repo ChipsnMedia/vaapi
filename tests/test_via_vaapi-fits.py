@@ -4,7 +4,9 @@ from common import*
 
 
 def test_via_vaapifits():
-    return execute_vaapifits()
+    ret = execute_vaapifits()
+    assert ret == True
+    return 
 
 # def main():
 #     return test_via_vaapifits()

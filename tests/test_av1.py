@@ -3,7 +3,7 @@ import pytest
 from common import*
 
 STREAM_ROOT_av1 = "/Stream/work/VAAPIContent/av1"
-REFC_FILE_PATH_av1 = "../../wave517_dec_pvric_nommf_mthread_v5.5.72_vaapi/av1_dec"
+REFC_FILE_PATH_av1 = "../../wave517_dec_pvric_nommf_mthread_v5.5.73_vaapi/av1_dec"
 CODEC_STR_av1 = "av1_dec"
 
 @pytest.mark.parametrize("stream_name", get_test_stream_list(STREAM_ROOT_av1))
@@ -12,7 +12,7 @@ def test_av1_streams(stream_name):
     print("+" + get_f_name() + " stream_name=" + stream_name)
     file_name_list = get_file_name_list(stream_name)
 
-    if CNM_REFC_TEST == True:
+    if get_refc_test_mode() == True:
         ret = decode_vaapi_ffmpeg(file_name_list, True)
         assert ret == True
 

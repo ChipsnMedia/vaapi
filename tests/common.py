@@ -2,7 +2,7 @@
 import sys
 import os
 import filecmp
-CNM_REFC_TEST = False
+CNM_REFC_TEST = False 
 FNI_STREAM_NAME_IDX = 0
 FNI_VA_STREAM_NAME_IDX = 1
 FNI_OUTPUT_FILE_VAAPI_FFMPEG = 2 # decoded by ffmpeg 
@@ -19,12 +19,19 @@ MY_LIBVA_DRIVER_NAME = "iHD"
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
 FFMPEG_LOG_LEVEL_STR="warning" # verbose
 
-FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf", ".bin"]
+FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf", ".bin", ".265", ".264"]
 STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_HighRes_720x576_r6009"]
 
 def get_f_name():
     return "[" + sys._getframe().f_back.f_code.co_name + "] "
 
+def set_refc_test_mode(): #for CNM internel 
+    global CNM_REFC_TEST
+    CNM_REFC_TEST = True
+    return
+
+def get_refc_test_mode():
+    return CNM_REFC_TEST
 
 def get_bitstream_list(path, stream_list):
     list_of_folders = os.listdir(path)
@@ -53,6 +60,10 @@ def get_test_stream_list(stream_root):
             if skip_stream_name in stream_name:
                 is_skip = True
                 break
+        # if "Dancing_1920x1080p_13mbps_23.97fps_Main_at_4.0L_Cabac_VBR_DTV.mp4" in stream_name:
+        #     is_skip = False
+        # else:
+        #     is_skip = True 
         if is_skip == False:
             test_stream_list.append(stream_name)
 
@@ -118,8 +129,7 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
 	    os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
 	    os.system("echo $LIBVA_VA_BITSTREAM")
         
-    cmdstr = FFMPEG_FILE_PATH + " -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -i " + stream_name + " -f rawvideo -pix_fmt yuv420p -vsync passthrough " + output_name + " -y"
-       
+    cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -i " + stream_name + " -f rawvideo -pix_fmt yuv420p -vsync passthrough " + output_name + " -y"
     print(get_f_name() + " " + cmdstr)
     try:
         if os.system(cmdstr) == 0:
@@ -141,6 +151,8 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
     ret = False
     is_es_stream = False
     stream_name = file_name_list[FNI_STREAM_NAME_IDX]
+    stream_name_ext = os.path.splitext(stream_name)[1]
+    stream_name_ext = stream_name_ext.lower()
     va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
     if enable_vaapi:
         output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_CMODEL]
@@ -152,7 +164,7 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
 
         is_es_stream = False
         for es_stream_ext in FILE_EXT_OF_ELEMENTARY_STREAM:
-            if es_stream_ext in stream_name:
+            if es_stream_ext in stream_name_ext:
                 is_es_stream = True
                 break
 
