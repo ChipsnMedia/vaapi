@@ -10,11 +10,12 @@ cd wave517_dec_pvric_nommf_mthread_v5.5.72_vaapi/
 
 #build libvauapi package
 make -f libvpuapi.mak PRODUCT=WAVE517 clean 
-make -f libvpuapi.mak PRODUCT=WAVE517 clean 
+make -f libvpuapi.mak PRODUCT=WAVE517
 
 #install libvpuapi headers and so file and VPU FW to system devenv
 #the bellow command will copy libvpuapi header file to /usr/local/include/ and ibvpuapi.so file and VPU fw bin file to  /usr/local/lib/ 
-make -f libvpuapi.mak PRODUCT=WAVE517 install 
+sudo make -f libvpuapi.mak PRODUCT=WAVE517 install 
+sudo ldconfig
 
 #build vpu kernel driver
 cd vdi/linux/driver
@@ -115,28 +116,16 @@ ffmpeg -version
 cd ..
 
 # for gstreamer
+sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-build libaom-dev flex bison libz-dev libpixman-1-dev meson
+pip3 install --user meson
+export PATH="$HOME/.local/bin:$PATH"
 
-sudo apt install gstreamer1.0-vaapi
-
-export GST_VAAPI_ALL_DRIVERS=1 
-which gst-inspect-1.0 
-gst-inspect-1.0 vaapi
-
-# sudo apt install python3 python3-pip python3-setuptools python3-wheel ninja-build libaom-dev flex bison libz-dev
-
-# pip3 install --user meson
-# export PATH="$HOME/.local/bin:$PATH"
-
-# cd gst-build
-# git checkout origin/1.19.1
-# # modify gst-build/meson_options.txt to option('vaapi', type : 'feature', value : 'enabled')
-# meson builddir 
-# ninja -C builddir
-# ninja -C builddir devenv # set some env variables to use this build in default
-# export GST_VAAPI_ALL_DRIVERS=1 
-# which gst-inspect-1.0 
-# gst-inspect-1.0 vaapi
-# cd ..
+cd gst-build
+git checkout master
+meson builddir 
+ninja -C builddir
+#ninja -C builddir devenv # set some env variables to use this build in default
+cd ..
 
 
 

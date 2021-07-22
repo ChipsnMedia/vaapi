@@ -88,26 +88,30 @@ mkdir result
 # encoder : Hardware-only transcode to H.264 at 2Mbps CBR: input.mp4를 hardware로 decoding해서 enocder hardware로 바로 넘기고(YUV buffer 생성없이) hardware encoder로 2Mbps CBR로 인코딩한다.
 #ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -i /Stream/work/vastream/AIR_320x240_264.avi -c:v h264_vaapi -b:v 2M -maxrate 2M ./result/output_2Mbps.mp4
 
-# export GST_DEBUG=4 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
-# export GST_VAAPI_ALL_DRIVERS=1 
-# export LIBVA_MESSAGING_LEVEL=2
-# gst-inspect-1.0 vaapi
-
 # gtest of libva-utils
 #test_va_api > test_va_api_result.txt
 
+
 # for libva-fits
 # Run only gst-vaapi test cases on iHD driver for KBL platform
+
 export GST_VAAPI_ALL_DRIVERS=1 
 export VAAPI_FITS_CONFIG_FILE=./config/vpu
 cd vaapi-fits
-# #  ./vaapi-fits list | grep test/gst-vaapi
 #  ./vaapi-fits list | grep test/ffmpeg-vaapi
-#  ./vaapi-fits -v run test/gst-vaapi/decode --platform KBL --call-timeout 6000000
-# #  ./vaapi-fits run test/gst-vaapi/encode --platform KBL --call-timeout 6000000
-# #  ./vaapi-fits run test/gst-vaapi/transcode --platform KBL --call-timeout 6000000 
  ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform KBL --call-timeout 6000000
-# #  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform KBL --call-timeout 6000000 
-# #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform KBL --call-timeout 6000000
-# ffmpeg -hwaccel vaapi -init_hw_device vaapi=hw:/dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -filter_hw_device hw -v verbose -i /home/ta-ubuntu/Users/gregory/vaapi/vaapi-fits/assets/hevc/1080p.h265 -pix_fmt nv12 -f rawvideo -vsync passthrough -autoscale 0 -vframes 10 -y /home/ta-ubuntu/Users/gregory/vaapi/vaapi-fits/results/21a6baa6-e608-11eb-bcd5-71868998e81e_0/_0.test.ffmpeg-vaapi.decode.hevc/default/1080p_1920x1080_NV12.yu
+#  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform KBL --call-timeout 6000000 
+#  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform KBL --call-timeout 6000000
 cd ..
+
+ninja -C gst-build/builddir devenv # create new shell that enter an development environment where you will be able to work on GStreamer easily.
+# if new shell is created. run the below commands
+
+# export GST_DEBUG=4 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
+export GST_VAAPI_ALL_DRIVERS=1 
+export VAAPI_FITS_CONFIG_FILE=./config/vpu
+gst-inspect-1.0 vaapi
+#  ./vaapi-fits list | grep test/gst-vaapi
+ ./vaapi-fits -v run test/gst-vaapi/decode --platform KBL --call-timeout 6000000
+#  ./vaapi-fits run test/gst-vaapi/encode --platform KBL --call-timeout 6000000
+#  ./vaapi-fits run test/gst-vaapi/transcode --platform KBL --call-timeout 6000000 
