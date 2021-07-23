@@ -1,7 +1,7 @@
 import getopt
 from common import*
 
-REFC_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.72_vaapi"
+REFC_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.73_vaapi"
 
 def test_streams(codec_str, input_file_name):
     print("+" + get_f_name() + " input_file_name=" + input_file_name + ",  codec_str=" + codec_str)

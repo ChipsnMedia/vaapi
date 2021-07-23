@@ -12,6 +12,9 @@ def test_vp9_streams(stream_name):
     print("+" + get_f_name() + " stream_name=" + stream_name)
     file_name_list = get_file_name_list(stream_name)
 
+    if os.getenv("REFC_TEST_MODE") == "True":
+        set_refc_test_mode()
+
     if get_refc_test_mode() == True:
         ret = decode_vaapi_ffmpeg(file_name_list, True)
         assert ret == True
