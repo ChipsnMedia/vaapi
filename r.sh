@@ -84,6 +84,36 @@ mkdir result
 # export LIBVA_TRACE_SURFACE=/Stream/work/gregory/vastream/enc/AIR_320x240_264.output.mp4.ivf.enc.yuv
 # ffmpeg -vaapi_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/enc/AIR_320x240_264.input.avi -vf 'format=nv12,hwupload' -c:v h264_vaapi -qp 18 /Stream/work/gregory/vastream/enc/AIR_320x240_264.output.mp4 -y
 
+# ## CBR
+# ## test(bframes=2,bitrate=4000,case=720p,fps=30,gop=30,profile=main,slices=4)
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/enc/720p-cbr-main-30-30-4-2-4000k-4000k-0.h264ivf.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/enc/720p-cbr-main-30-30-4-2-4000k-4000k-0.h264.ivf
+# export LIBVA_TRACE_SURFACE=/Stream/work/gregory/vastream/enc/A720p-cbr-main-30-30-4-2-4000k-4000k-0.h264.ivf.enc.yuv
+# ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -v verbose -f rawvideo -pix_fmt nv12 -s:v 1280x720 -r:v 30 -i /home/ta/vaapi_prj/vaapi/vaapi-fits/assets/yuv/720p_NV12.yuv -vf 'format=nv12,hwupload' -c:v h264_vaapi -profile:v main -rc_mode CBR -g 30 -slices 4 -bf 2 -b:v 4000k -maxrate 4000k -low_power 0 -vframes 150 -y /Stream/work/gregory/vastream/enc/720p-cbr-main-30-30-4-2-4000k-4000k-0.h264
+
+# ## CQP
+# ## test(bframes=2,case=QVGA,gop=30,profile=main,qp=28,quality=4,slices=4)
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/enc/QVGA-cqp-main-30-28-4-4-2-0.h264.ivf.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/enc/QVGA-cqp-main-30-28-4-4-2-0.h264.ivf
+# export LIBVA_TRACE_SURFACE=/Stream/work/gregory/vastream/enc/QVGA-cqp-main-30-28-4-4-2-0.h264.ivf.enc.yuv
+# ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -v verbose -f rawvideo -pix_fmt nv12 -s:v 320x240 -i /home/ta/vaapi_prj/vaapi/vaapi-fits/assets/yuv/QVGA_NV12.yuv -vf 'format=nv12,hwupload' -c:v h264_vaapi -profile:v main -rc_mode CQP -g 30 -qp 28 -quality 4 -slices 4 -bf 2 -low_power 0 -vframes 300 -y /Stream/work/gregory/vastream/enc/QVGA-cqp-main-30-28-4-4-2-0.h264
+
+# ##CQP_LP
+# ## test(case=720p,gop=30,profile=high,qp=14,quality=4,slices=4)
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/enc/720p-cqp-high-30-14-4-4-1.h264.ivf.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/enc/720p-cqp-high-30-14-4-4-1.h264.ivf
+# export LIBVA_TRACE_SURFACE=/Stream/work/gregory/vastream/enc/720p-cqp-high-30-14-4-4-1.h264.ivf.enc.yuv
+# ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -v verbose -f rawvideo -pix_fmt nv12 -s:v 1280x720 -i /home/ta/vaapi_prj/vaapi/vaapi-fits/assets/yuv/720p_NV12.yuv -vf 'format=nv12,hwupload' -c:v h264_vaapi -profile:v high -rc_mode CQP -g 30 -qp 14 -quality 4 -slices 4 -low_power 1 -vframes 150 -y /Stream/work/gregory/vastream/enc/720p-cqp-high-30-14-4-4-1.h264
+
+
+# ## VBR
+# # test(bframes=0,bitrate=4000,case=720p,fps=30,gop=30,profile=high,quality=4,refs=1,slices=3)
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/enc/720p-vbr-high-30-30-3-4-0-4000k-8000k-0.h264.ivf.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/enc/720p-vbr-high-30-30-3-4-0-4000k-8000k-0.h264.ivf
+# export LIBVA_TRACE_SURFACE=/Stream/work/gregory/vastream/enc/720p-vbr-high-30-30-3-4-0-4000k-8000k-0.h264.ivf.enc.yuv
+# ffmpeg -hwaccel vaapi -vaapi_device /dev/dri/renderD128 -v verbose -f rawvideo -pix_fmt nv12 -s:v 1280x720 -r:v 30 -i /home/ta/vaapi_prj/vaapi/vaapi-fits/assets/yuv/720p_NV12.yuv -vf 'format=nv12,hwupload' -c:v h264_vaapi -profile:v high -rc_mode VBR -g 30 -quality 4 -slices 3 -bf 0 -b:v 4000k -maxrate 8000k -low_power 0 -vframes 150 -y /Stream/work/gregory/vastream/enc/720p-vbr-high-30-30-3-4-0-4000k-8000k-0.h264
+
+
 
 # encoder : Hardware-only transcode to H.264 at 2Mbps CBR: input.mp4를 hardware로 decoding해서 enocder hardware로 바로 넘기고(YUV buffer 생성없이) hardware encoder로 2Mbps CBR로 인코딩한다.
 #ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -i /Stream/work/vastream/AIR_320x240_264.avi -c:v h264_vaapi -b:v 2M -maxrate 2M ./result/output_2Mbps.mp4
@@ -96,7 +126,8 @@ mkdir result
 # Run only gst-vaapi test cases on iHD driver for KBL platform
 
 export GST_VAAPI_ALL_DRIVERS=1 
-export VAAPI_FITS_CONFIG_FILE=./config/vpu
+export VAAPI_FITS_CONFIG_FILE=./config/conformance
+export ITU_T_ASSETS=/Stream/work/ITU_T_ASSETS
 cd vaapi-fits
 #  ./vaapi-fits list | grep test/ffmpeg-vaapi
  ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform KBL --call-timeout 6000000
@@ -104,14 +135,14 @@ cd vaapi-fits
 #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform KBL --call-timeout 6000000
 cd ..
 
-ninja -C gst-build/builddir devenv # create new shell that enter an development environment where you will be able to work on GStreamer easily.
-# if new shell is created. run the below commands
+# ninja -C gst-build/builddir devenv # create new shell that enter an development environment where you will be able to work on GStreamer easily.
+# # if new shell is created. run the below commands
 
-# export GST_DEBUG=4 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
-export GST_VAAPI_ALL_DRIVERS=1 
-export VAAPI_FITS_CONFIG_FILE=./config/vpu
-gst-inspect-1.0 vaapi
-#  ./vaapi-fits list | grep test/gst-vaapi
- ./vaapi-fits -v run test/gst-vaapi/decode --platform KBL --call-timeout 6000000
-#  ./vaapi-fits run test/gst-vaapi/encode --platform KBL --call-timeout 6000000
-#  ./vaapi-fits run test/gst-vaapi/transcode --platform KBL --call-timeout 6000000 
+# # export GST_DEBUG=4 # 2:WARNING, 4:INFO, 5:DEBUG, 6:LOG, 7:TRACE
+# export GST_VAAPI_ALL_DRIVERS=1 
+# export VAAPI_FITS_CONFIG_FILE=./config/vpu
+# gst-inspect-1.0 vaapi
+# #  ./vaapi-fits list | grep test/gst-vaapi
+#  ./vaapi-fits -v run test/gst-vaapi/decode --platform KBL --call-timeout 6000000
+# #  ./vaapi-fits run test/gst-vaapi/encode --platform KBL --call-timeout 6000000
+# #  ./vaapi-fits run test/gst-vaapi/transcode --platform KBL --call-timeout 6000000 
