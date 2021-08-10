@@ -3,8 +3,8 @@ from common import*
 
 REFC_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.73_vaapi"
 
-def test_streams(codec_str, input_file_name):
-    print("+" + get_f_name() + " input_file_name=" + input_file_name + ",  codec_str=" + codec_str)
+def test_streams(codec_str, input_file_name, test_case):
+    print("+" + get_f_name() + " input_file_name=" + input_file_name + ",  codec_str=" + codec_str + " test_case=" + str(test_case))
     ret = False
     stream_name = input_file_name
     refc_file_path = ""
@@ -20,28 +20,47 @@ def test_streams(codec_str, input_file_name):
         print("+" + get_f_name() + " unknown codec_str = " + codec_str)
         return False
 
+    vaapi_app_path = REFC_FILE_ROOT + "/tc_dec_vaapi"
+
     file_name_list = get_file_name_list(stream_name)
-    if get_refc_test_mode() == True:
+    if test_case == TC_COMPARE_REFC_AND_VAAPI_REFC:
         ret = decode_vaapi_ffmpeg(file_name_list, True)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
             return False
 
-        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, True)
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, True, False)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_cnm_ref_c with vaapi mode")
             return False
 
-        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False)
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, False)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
             return False
 
         ret = compare_output(file_name_list, TC_COMPARE_REFC_AND_VAAPI_REFC)
         print("-" + get_f_name() + " TC_COMPARE_REFC_AND_VAAPI_REFC ret=" + str(ret))
+    elif test_case == TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC:
+        ret = decode_vaapi_ffmpeg(file_name_list, True)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
+            return False
 
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, True, False)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_cnm_ref_c with vaapi mode")
+            return False
+
+        ret = decode_cnm_vaapi_app(vaapi_app_path, codec_str, file_name_list)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
+            return False
+
+        ret = compare_output(file_name_list, TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC)
+        print("-" + get_f_name() + " TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC ret=" + str(ret))
     else:
-        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False)
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, True)
         if ret == False:
             print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
             return False
@@ -64,8 +83,9 @@ def main():
 
     INPUT_FILE = "/Stream/work/gregory/DXVAContent/cnm/AIR_320x240_264.avi"
     CODEC_STR = "avc_dec"
+    TEST_CASE = "0"  
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hc:i:r",["help", "codec=", "input=", "refc_test"])
+        opts, args = getopt.getopt(sys.argv[1:],"hc:i:r",["help", "codec=", "input=", "test_case="])
     except getopt.GetoptError as err:
         print("Error in argument, reason=" + str(err))
         sys.exit(2)
@@ -80,12 +100,19 @@ def main():
             if os.path.isfile(INPUT_FILE) == False:
                 print("can't open input file = " + INPUT_FILE)
                 return
-        elif o in ("-c", "--refc_test"):
-            set_refc_test_mode()
+        elif o in ("-t", "--test_case"):
+            if a == "0":
+                TEST_CASE = TC_COMPARE_VAAPI_FFMPEG_AND_REFC
+            elif a == "1":
+                TEST_CASE = TC_COMPARE_REFC_AND_VAAPI_REFC
+            elif a == "2":
+                TEST_CASE = TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC
+            else:
+                assert False, "unhandled option"
         else:
             assert False, "unhandled option"
 
-    test_streams(CODEC_STR, INPUT_FILE)
+    test_streams(CODEC_STR, INPUT_FILE, TEST_CASE)
     return
 
 if __name__ == '__main__':

@@ -1,0 +1,3 @@
+#!/bin/bash
+# ffmpeg -hwaccel vaapi -init_hw_device vaapi=hw:/dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -filter_hw_device hw -v verbose -i /Stream/work/ITU_T_ASSETS/avc/AVCv1/BASQP1_Sony_C.jsv -pix_fmt yuv420p -f rawvideo -vsync passthrough -autoscale 0 -vframes 4 -y /home/ta-ubuntu/Users/gregory/vaapi_prj/vaapi/vaapi-fits/results/aef78f0e-f8ee-11eb-9d75-41dd53cfeb79_0/_0.test.ffmpeg-vaapi.decode.avc/default/BASQP1_Sony_C_176x144_I420.yuv 
+./tests/main.py --codec=avc_dec --input=/Stream/work/ITU_T_ASSETS/avc/AVCv1/BASQP1_Sony_C.jsv --test_case=1

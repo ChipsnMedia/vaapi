@@ -2,7 +2,6 @@
 import sys
 import os
 import filecmp
-CNM_REFC_TEST = False 
 FNI_STREAM_NAME_IDX = 0
 FNI_VA_STREAM_NAME_IDX = 1
 FNI_OUTPUT_FILE_VAAPI_FFMPEG = 2 # decoded by ffmpeg 
@@ -24,14 +23,6 @@ STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_
 
 def get_f_name():
     return "[" + sys._getframe().f_back.f_code.co_name + "] "
-
-def set_refc_test_mode(): #for CNM internel 
-    global CNM_REFC_TEST
-    CNM_REFC_TEST = True
-    return
-
-def get_refc_test_mode():
-    return CNM_REFC_TEST
 
 def get_bitstream_list(path, stream_list):
     list_of_folders = os.listdir(path)
@@ -126,9 +117,10 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
     os.putenv("LIBVA_TRACE", trace_file_name)
     os.system("echo $LIBVA_TRACE")
     if enable_to_generate_va_bistream == True:
-	    os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
-	    os.system("echo $LIBVA_VA_BITSTREAM")
-        
+        os.putenv("LIBVA_DRIVERS_PATH", MY_LIBVA_DRIVERS_PATH)
+        os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
+        os.system("echo $LIBVA_VA_BITSTREAM")
+
     cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -i " + stream_name + " -f rawvideo -pix_fmt yuv420p -vsync passthrough " + output_name + " -y"
     print(get_f_name() + " " + cmdstr)
     try:
@@ -147,7 +139,32 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
     print(get_f_name() + "result is " + str(ret))
     return ret
 
-def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
+def decode_cnm_vaapi_app(vaapi_app_path, codec_str, file_name_list):
+
+    ret = False
+    va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
+    output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_APP]
+    if "av1_dec" in codec_str:
+        cmdstr = vaapi_app_path + " --codec=0 --input=" + va_stream_name + " --output=" + output_name 
+    elif "hevc_dec" in codec_str:
+        cmdstr = vaapi_app_path + " --codec=12 --input=" + va_stream_name + " --output=" + output_name 
+    elif "vp9_dec" in codec_str:
+        cmdstr = vaapi_app_path + " --codec=13 --input=" + va_stream_name + " --output=" + output_name 
+    else:
+        cmdstr = vaapi_app_path + " --codec=16 --input=" + va_stream_name + " --output=" + output_name 
+
+    print(get_f_name() + " " + cmdstr)
+    try:
+        if os.system(cmdstr) == 0:
+            ret = True
+    except Exception as e:
+        print(get_f_name() + " Exception str=" + str(e))
+        pass
+
+    print(get_f_name() + "result is " + str(ret))
+    return ret
+
+def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, enable_display_order):
     ret = False
     is_es_stream = False
     stream_name = file_name_list[FNI_STREAM_NAME_IDX]
@@ -215,22 +232,22 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi):
     ret = False
 
     if enable_vaapi == True:
-        cmdstr = refc_file_path + " --codec " + codec_str + " --vaapi -i " + va_stream_name + " -o " + output_name 
+        cmdstr = refc_file_path + " -y 0 --codec " + codec_str + " --vaapi -i " + va_stream_name + " -o " + output_name 
     else:
-        if CNM_REFC_TEST == True:
+        if enable_display_order == False:
             if "av1_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o "  + output_name
+                cmdstr = refc_file_path + " -y 0 --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o "  + output_name
             elif "vp9_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name
+                cmdstr = refc_file_path + " -y 0 --ivf -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name
             else:
-                cmdstr = refc_file_path + " -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name
+                cmdstr = refc_file_path + " -y 0 -r -c --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name
         else:
             if "av1_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+                cmdstr = refc_file_path + " -y 0 --ivf --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
             elif "vp9_dec" in codec_str:
-                cmdstr = refc_file_path + " --ivf --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+                cmdstr = refc_file_path + " -y 0 --ivf --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
             else:
-                cmdstr = refc_file_path + " --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
+                cmdstr = refc_file_path + " -y 0 --codec " + codec_str + " -i " + es_stream_name + " -o " + output_name 
 
     print(get_f_name() + " " + cmdstr)
     try:
