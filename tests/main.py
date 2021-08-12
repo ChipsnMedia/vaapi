@@ -2,6 +2,7 @@ import getopt
 from common import*
 
 REFC_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.73_vaapi"
+VAAPI_APP_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.73_vaapi_fpga"
 
 def test_streams(codec_str, input_file_name, test_case):
     print("+" + get_f_name() + " input_file_name=" + input_file_name + ",  codec_str=" + codec_str + " test_case=" + str(test_case))
@@ -20,7 +21,7 @@ def test_streams(codec_str, input_file_name, test_case):
         print("+" + get_f_name() + " unknown codec_str = " + codec_str)
         return False
 
-    vaapi_app_path = REFC_FILE_ROOT + "/tc_dec_vaapi"
+    vaapi_app_path = VAAPI_APP_FILE_ROOT + "/tc_dec_vaapi"
 
     file_name_list = get_file_name_list(stream_name)
     if test_case == TC_COMPARE_REFC_AND_VAAPI_REFC:

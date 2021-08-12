@@ -14,11 +14,12 @@ TC_COMPARE_VAAPI_FFMPEG_AND_REFC = 0
 TC_COMPARE_REFC_AND_VAAPI_REFC = 1 # for CNM internel 
 TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC = 2 # for CNM internel
 MY_LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri"
+STABLE_LIBVA_DRIVERS_PATH = "/home/ta-ubuntu/Users/jeff/vaapi/media-driver/build/media_driver"
 MY_LIBVA_DRIVER_NAME = "iHD"
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
 FFMPEG_LOG_LEVEL_STR="warning" # verbose
 
-FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf", ".bin", ".265", ".264"]
+FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf", ".bin", ".265", ".264", ".jsv", ".bit"]
 STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_HighRes_720x576_r6009"]
 
 def get_f_name():
@@ -117,11 +118,11 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
     os.putenv("LIBVA_TRACE", trace_file_name)
     os.system("echo $LIBVA_TRACE")
     if enable_to_generate_va_bistream == True:
-        os.putenv("LIBVA_DRIVERS_PATH", MY_LIBVA_DRIVERS_PATH)
+        os.putenv("LIBVA_DRIVERS_PATH", STABLE_LIBVA_DRIVERS_PATH)
         os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
         os.system("echo $LIBVA_VA_BITSTREAM")
 
-    cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -i " + stream_name + " -f rawvideo -pix_fmt yuv420p -vsync passthrough " + output_name + " -y"
+    cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_flags allow_profile_mismatch -i " + stream_name + " -f rawvideo -pix_fmt yuv420p -vsync passthrough -autoscale 0 -y " + output_name
     print(get_f_name() + " " + cmdstr)
     try:
         if os.system(cmdstr) == 0:
@@ -144,7 +145,7 @@ def decode_cnm_vaapi_app(vaapi_app_path, codec_str, file_name_list):
     ret = False
     va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
     output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_APP]
-    if "av1_dec" in codec_str:
+    if "avc_dec" in codec_str:
         cmdstr = vaapi_app_path + " --codec=0 --input=" + va_stream_name + " --output=" + output_name 
     elif "hevc_dec" in codec_str:
         cmdstr = vaapi_app_path + " --codec=12 --input=" + va_stream_name + " --output=" + output_name 
