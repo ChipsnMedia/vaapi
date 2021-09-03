@@ -17,10 +17,15 @@ MY_LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri"
 STABLE_LIBVA_DRIVERS_PATH = "/home/ta-ubuntu/Users/jeff/vaapi/media-driver/build/media_driver"
 MY_LIBVA_DRIVER_NAME = "iHD"
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
-FFMPEG_LOG_LEVEL_STR="warning" # verbose
+FFMPEG_LOG_LEVEL_STR="verbose" # verbose
 
 FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf", ".bin", ".265", ".264", ".jsv", ".bit"]
 STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_HighRes_720x576_r6009"]
+
+LAST_COMMAND_STR = ""
+
+def get_last_cmdstr():
+    return LAST_COMMAND_STR
 
 def get_f_name():
     return "[" + sys._getframe().f_back.f_code.co_name + "] "
@@ -137,6 +142,8 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
         print(get_f_name() + " Exception str=" + str(e))
         pass
 
+    global LAST_COMMAND_STR
+    LAST_COMMAND_STR = cmdstr
     print(get_f_name() + "result is " + str(ret))
     return ret
 
@@ -162,6 +169,8 @@ def decode_cnm_vaapi_app(vaapi_app_path, codec_str, file_name_list):
         print(get_f_name() + " Exception str=" + str(e))
         pass
 
+    global LAST_COMMAND_STR
+    LAST_COMMAND_STR = cmdstr
     print(get_f_name() + "result is " + str(ret))
     return ret
 
@@ -233,7 +242,7 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, en
     ret = False
 
     if enable_vaapi == True:
-        cmdstr = refc_file_path + " -y 0 --codec " + codec_str + " --vaapi -i " + va_stream_name + " -o " + output_name 
+        cmdstr = refc_file_path + " -y 0 --codec " + codec_str + " --vaapi -c -i " + va_stream_name + " -o " + output_name 
     else:
         if enable_display_order == False:
             if "av1_dec" in codec_str:
@@ -257,7 +266,8 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, en
     except Exception as e:
         print(get_f_name() + " Exception str=" + str(e))
         pass
-
+    global LAST_COMMAND_STR
+    LAST_COMMAND_STR = cmdstr
     print(get_f_name() + "result is " + str(ret))
     return ret
 
@@ -284,6 +294,9 @@ def compare_output(file_name_list, test_case):
 
     if ret == False:
         print(get_f_name() + "MISMATCH golden : " + golden + " and compare : " + compare)
+    else:
+        print(get_f_name() + "MATCH golden : " + golden + " and compare : " + compare)
+
 
     return ret
 
