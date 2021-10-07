@@ -251,9 +251,9 @@ mkdir result
 # for libva-fits
 # Run only gst-vaapi test cases on iHD driver for KBL platform
 
-# # export GST_VAAPI_ALL_DRIVERS=1 
-# export VAAPI_FITS_CONFIG_FILE=./config/conformance
-# export ITU_T_ASSETS=/Stream/work/ITU_T_ASSETS
+# export GST_VAAPI_ALL_DRIVERS=1 
+export VAAPI_FITS_CONFIG_FILE=./config/conformance
+export ITU_T_ASSETS=/Stream/work/ITU_T_ASSETS
 cd vaapi-fits
 # #  ./vaapi-fits list | grep test/ffmpeg-vaapi
 #   ./vaapi-fits -v run test/ffmpeg-vaapi/decode/av1.py --platform TGL --call-timeout 6000000 -v
@@ -261,7 +261,7 @@ cd vaapi-fits
 #   ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/av1.py --platform TGL --call-timeout 6000000 -v
 #  ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform TGL --call-timeout 6000000 -v
  ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v
-# #  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform TGL --call-timeout 6000000 
+#  ./vaapi-fits run test/ffmpeg-vaapi/encode/hevc.py --platform KBL --call-timeout 6000000 
 # #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform TGL --call-timeout 6000000
  cd ..
 
