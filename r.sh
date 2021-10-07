@@ -3,6 +3,26 @@
 export PATH="$PATH:$HOME/.local/bin"
 # echo $PATH
 
+if [ $# eq  1 ]; then
+
+ 	echo "+start prom downloading"
+	cd /home/ta-ubuntu/Users/nas/wave517_br/fpga/board/ref-sw-5.0/vdi/linux/driver
+	sudo sh unload.sh
+	sudo sh load.sh
+	cd /home/ta-ubuntu/Users/nas/wave517_br/fpga/board/ref-sw-5.0
+	sh myprom.sh
+ 	echo "-start prom downloading"
+
+ 	echo "+start media-driver install"
+	cd /home/ta-ubuntu/Users/gregory/vaapi_prj/vaapi/media-driver/build
+	sudo make install
+ 	echo "-start media-driver install"
+
+	cd /home/ta-ubuntu/Users/gregory/vaapi_prj/vaapi
+fi
+
+
+
 #Configuring permissions
 stat -c "%G" /dev/dri/render*
 groups ${USER}
@@ -11,7 +31,7 @@ groups ${USER}
 # newgrp render
 
 export LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
-# export LIBVA_DRIVERS_PATH=/home/ta/vaapi_prj/vaapi/media-driver/build/media_driver
+# export LIBVA_DRIVERS_PATH=/home/ta-ubuntu/Users/jeff/vaapi/media-driver/build/media_driver
 export LIBVA_DRIVER_NAME=iHD
 # export LIBVA_DRIVER_NAME=i965  # for gstreamer-vaapi v1.14.5
 export LIBVA_MESSAGING_LEVEL=2
@@ -77,6 +97,50 @@ mkdir result
 
 # export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/av1/Main_8bits_047_Inter_192x128_r6009.ivf.ivf
 # ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/av1/Main_8bits_047_Inter_192x128_r6009.ivf /Stream/work/gregory/vastream/av1/Main_8bits_047_Inter_192x128_r6009.ivf.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/mp2/[P]ATSC_18.avi.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/mp2/[P]ATSC_18.avi.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/mp2/[P]ATSC_18.avi /Stream/work/gregory/vastream/mp2/[P]ATSC_18.avi.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/mp2/2Fast_2Furious_720P_mp2_800x600_2.avi.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/mp2/2Fast_2Furious_720P_mp2_800x600_2.avi.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/mp2/2Fast_2Furious_720P_mp2_800x600_2.avi /Stream/work/gregory/vastream/mp2/2Fast_2Furious_720P_mp2_800x600_2.avi.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-001.ivf.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-001.ivf.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-001.ivf /Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-001.ivf.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-002.ivf.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-002.ivf.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-002.ivf /Stream/work/gregory/vastream/vp8/vp80-00-comprehensive-002.ivf.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/vc1/Tallship_320x240p_10mbps_29.97fps_AP_at_L0_6BFr_CBR_Noloopfilter.wmv.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/vc1/Tallship_320x240p_10mbps_29.97fps_AP_at_L0_6BFr_CBR_Noloopfilter.wmv.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/vc1/Tallship_320x240p_10mbps_29.97fps_AP_at_L0_6BFr_CBR_Noloopfilter.wmv /Stream/work/gregory/vastream/vc1/Tallship_320x240p_10mbps_29.97fps_AP_at_L0_6BFr_CBR_Noloopfilter.wmv.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/vc1/sample-wmv9-simple-SP@ML.wmv.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/vc1/sample-wmv9-simple-SP@ML.wmv.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/vc1/sample-wmv9-simple-SP@ML.wmv /Stream/work/gregory/vastream/vc1/sample-wmv9-simple-SP@ML.wmv.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/mp4/center_qvga_qp8.mp4.avi.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/mp4/center_qvga_qp8.mp4.avi.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/mp4/center_qvga_qp8.mp4.avi /Stream/work/gregory/vastream/mp4/center_qvga_qp8.mp4.avi.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/mp4/metro_qvga_qp8.mp4.avi.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/mp4/metro_qvga_qp8.mp4.avi.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/mp4/metro_qvga_qp8.mp4.avi /Stream/work/gregory/vastream/mp4/metro_qvga_qp8.mp4.avi.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/mp4/skull_qvga_qp8.mp4.avi.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/mp4/skull_qvga_qp8.mp4.avi.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/mp4/skull_qvga_qp8.mp4.avi /Stream/work/gregory/vastream/mp4/skull_qvga_qp8.mp4.avi.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/mp4/albt_qvga_1500.mp4.avi.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/mp4/albt_qvga_1500.mp4.avi.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/mp4/albt_qvga_1500.mp4.avi /Stream/work/gregory/vastream/mp4/albt_qvga_1500.mp4.avi.yuv -y
+
+# export LIBVA_TRACE=/Stream/work/gregory/vastream/mp4/april_qvga_qp8.mp4.avi.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/Stream/work/gregory/vastream/mp4/april_qvga_qp8.mp4.avi.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/vastream/mp4/april_qvga_qp8.mp4.avi /Stream/work/gregory/vastream/mp4/april_qvga_qp8.mp4.avi.yuv -y
 
 # encoder : Encode with H.264 at good constant quality: input.mp4를 software로 nv12 format으로 디코딩해서 hw encoder로 qp18로 인코딩한다.
 # export LIBVA_TRACE=/Stream/work/gregory/vastream/enc/AIR_320x240_264.output.mp4.ivf.va_trace.txt
@@ -187,16 +251,19 @@ mkdir result
 # for libva-fits
 # Run only gst-vaapi test cases on iHD driver for KBL platform
 
-export GST_VAAPI_ALL_DRIVERS=1 
-export VAAPI_FITS_CONFIG_FILE=./config/conformance
-export ITU_T_ASSETS=/Stream/work/ITU_T_ASSETS
+# # export GST_VAAPI_ALL_DRIVERS=1 
+# export VAAPI_FITS_CONFIG_FILE=./config/conformance
+# export ITU_T_ASSETS=/Stream/work/ITU_T_ASSETS
 cd vaapi-fits
-#  ./vaapi-fits list | grep test/ffmpeg-vaapi
- ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform TGL --call-timeout 6000000 -v
-#  ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform NONE --call-timeout 6000000 -v
-#  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform TGL --call-timeout 6000000 
-#  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform TGL --call-timeout 6000000
-cd ..
+# #  ./vaapi-fits list | grep test/ffmpeg-vaapi
+#   ./vaapi-fits -v run test/ffmpeg-vaapi/decode/av1.py --platform TGL --call-timeout 6000000 -v
+# #  ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/vp9.py --platform TGL --call-timeout 6000000 -v
+#   ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/av1.py --platform TGL --call-timeout 6000000 -v
+#  ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform TGL --call-timeout 6000000 -v
+ ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v
+# #  ./vaapi-fits run test/ffmpeg-vaapi/encode --platform TGL --call-timeout 6000000 
+# #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform TGL --call-timeout 6000000
+ cd ..
 
 # ninja -C gst-build/builddir devenv # create new shell that enter an development environment where you will be able to work on GStreamer easily.
 # # if new shell is created. run the below commands
