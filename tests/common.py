@@ -127,10 +127,12 @@ def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
     os.putenv("LIBVA_DRIVER_NAME", MY_LIBVA_DRIVER_NAME)
     os.putenv("LIBVA_TRACE", trace_file_name)
     os.system("echo $LIBVA_TRACE")
+    os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
+    os.system("echo $LIBVA_VA_BITSTREAM")
     if enable_to_generate_va_bistream == True:
         os.putenv("LIBVA_DRIVERS_PATH", STABLE_LIBVA_DRIVERS_PATH)
-        os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
-        os.system("echo $LIBVA_VA_BITSTREAM")
+        # os.putenv("LIBVA_VA_BITSTREAM", va_stream_name)
+        # os.system("echo $LIBVA_VA_BITSTREAM")
     if BIT_DEPTH == 8:
         fmt_str = "yuv420p"
     else:
@@ -174,7 +176,17 @@ def decode_cnm_vaapi_app(vaapi_app_path, codec_str, file_name_list):
         cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=12 --input=" + va_stream_name + " --output=" + output_name 
     elif "vp9_dec" in codec_str:
         cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=13 --input=" + va_stream_name + " --output=" + output_name 
-    else:
+    elif "vp8_dec" in codec_str:
+        cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=11 --input=" + va_stream_name + " --output=" + output_name 
+    elif "vc1_dec" in codec_str:
+        cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=1 --input=" + va_stream_name + " --output=" + output_name 
+    elif "mpeg2_dec" in codec_str:
+        cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=2 --input=" + va_stream_name + " --output=" + output_name 
+    elif "mpeg4_dec" in codec_str:
+        cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=3 --input=" + va_stream_name + " --output=" + output_name 
+    elif "h263_dec" in codec_str:
+        cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=4 --input=" + va_stream_name + " --output=" + output_name 
+    else: # av1
         cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=16 --input=" + va_stream_name + " --output=" + output_name 
 
     print(get_f_name() + " " + cmdstr)
@@ -203,6 +215,10 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, en
     else:
         output_name = file_name_list[FNI_OUTPUT_FILE_CMODEL]
 
+
+    if "vp8_dec" in codec_str or "vc1_dec" in codec_str or "mpeg2_dec" in codec_str  or "mpeg4_dec" in codec_str or "h263_dec" in codec_str :
+        print(get_f_name() + " not supported codec_str : " + str(codec_str))
+        return True
 
     if enable_vaapi == False:
 
