@@ -263,6 +263,7 @@ cd vaapi-fits
 #  ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v
  ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v --cnm_refc_dir /Stream/work/gregory/vaapi_enc_test_1008
 #  ./vaapi-fits run test/ffmpeg-vaapi/encode/hevc.py --platform KBL --call-timeout 6000000 -v
+#  ./vaapi-fits run test/ffmpeg-vaapi/encode/10bit/hevc.py --platform KBL --call-timeout 6000000 -v
 # #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform TGL --call-timeout 6000000
  cd ..
 
