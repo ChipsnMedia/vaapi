@@ -1,11 +1,11 @@
 import getopt
 from common import*
 
-REFC_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.73_vaapi_fpga"
-VAAPI_APP_FILE_ROOT="../../wave517_dec_pvric_nommf_mthread_v5.5.73_vaapi_fpga"
+REFC_FILE_ROOT="../../wave627_enc_wave517_dec_pvric_boda977_dec_single_vaapi_mthread_v3.3.3_vaapi_fpga"
+VAAPI_APP_FILE_ROOT="../../wave627_enc_wave517_dec_pvric_boda977_dec_single_vaapi_mthread_v3.3.3_vaapi_fpga"
 
-def test_streams(codec_str, input_file_name, test_case, bit_depth):
-    print("+" + get_f_name() + " input_file_name=" + input_file_name + ",  codec_str=" + codec_str + " test_case=" + str(test_case))
+def test_streams(codec_str, input_file_name, test_case, bit_depth, output_file_name):
+    print("+" + get_f_name() + " input_file_name=" + input_file_name + ",  codec_str=" + codec_str + " test_case=" + str(test_case) + " output_file_name=" + output_file_name);
     ret = False
     cmdstr_1 = ""
     cmdstr_2 = ""
@@ -36,6 +36,15 @@ def test_streams(codec_str, input_file_name, test_case, bit_depth):
     vaapi_app_path = VAAPI_APP_FILE_ROOT + "/tc_dec_vaapi"
     set_bit_depth(bit_depth)
     file_name_list = get_file_name_list(stream_name)
+    if output_file_name != "":
+        file_name_list[FNI_VA_STREAM_NAME_IDX] = output_file_name
+        file_name_list[FNI_TRACE_FILE_FROM_LIBVA] = os.path.dirname(output_file_name) + "/" + os.path.basename(output_file_name) + ".trace.txt"
+        file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG] = os.path.dirname(output_file_name) + "/" + os.path.basename(output_file_name) + ".vaapi.ffmpe.yuv"
+        ret = decode_vaapi_ffmpeg(file_name_list, True)
+        if ret == False:
+            print("+" + get_f_name() + " fail to generate ivf file")
+            return False
+        return ret
     if test_case == TC_COMPARE_REFC_AND_VAAPI_REFC:
         ret = decode_vaapi_ffmpeg(file_name_list, True)
         if ret == False:
@@ -109,11 +118,12 @@ def usage():
 def main():
 
     INPUT_FILE = "/Stream/work/gregory/DXVAContent/cnm/AIR_320x240_264.avi"
+    OUTPUT_FILE = ""
     CODEC_STR = "avc_dec"
     BIT_DEPTH = 8
     TEST_CASE = 0  
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hc:i:t:b:",["help", "codec=", "input=", "test_case=", "bit="])
+        opts, args = getopt.getopt(sys.argv[1:],"hc:i:t:b:o:",["help", "codec=", "input=", "test_case=", "bit=", "output="])
     except getopt.GetoptError as err:
         print("Error in argument, reason=" + str(err))
         sys.exit(2)
@@ -128,6 +138,8 @@ def main():
             if os.path.isfile(INPUT_FILE) == False:
                 print("can't open input file = " + INPUT_FILE)
                 return
+        elif o in ("-o", "--output"):
+            OUTPUT_FILE = a
         elif o in ("-t", "--test_case"):
             if a == "0":
                 TEST_CASE = TC_COMPARE_VAAPI_FFMPEG_AND_REFC
@@ -145,7 +157,7 @@ def main():
         else:
             assert False, "unhandled option"
 
-    test_streams(CODEC_STR, INPUT_FILE, TEST_CASE, BIT_DEPTH)
+    test_streams(CODEC_STR, INPUT_FILE, TEST_CASE, BIT_DEPTH, OUTPUT_FILE)
     return
 
 if __name__ == '__main__':
