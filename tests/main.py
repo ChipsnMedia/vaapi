@@ -91,6 +91,25 @@ def test_streams(codec_str, input_file_name, test_case, bit_depth, output_file_n
         if ret == False:
             print("-" + get_f_name() + "cmdstr_1 : "+ cmdstr_1)
             print("-" + get_f_name() + "cmdstr_2 : "+ cmdstr_2)
+    elif test_case == TC_COMPARE_SW_FFMPEG_AND_REF:
+        ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, True)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_cnm_ref_c without vaapi mode")
+            return False
+        cmdstr_1 = get_last_cmdstr()
+
+        ret = decode_swcodec_ffmpeg(file_name_list)
+        if ret == False:
+            print("+" + get_f_name() + " fail to decode_vaapi_ffmpeg")
+            return False
+        cmdstr_2 = get_last_cmdstr()
+
+        ret = compare_output(file_name_list, TC_COMPARE_SW_FFMPEG_AND_REF)
+        print("-" + get_f_name() + " TC_COMPARE_SW_FFMPEG_AND_REF ret=" + str(ret))
+        if ret == False:
+            print("-" + get_f_name() + "cmdstr_1 : "+ cmdstr_1)
+            print("-" + get_f_name() + "cmdstr_2 : "+ cmdstr_2)
+
     else:
         ret = decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, False, True)
         if ret == False:
@@ -147,6 +166,8 @@ def main():
                 TEST_CASE = TC_COMPARE_REFC_AND_VAAPI_REFC
             elif a == "2":
                 TEST_CASE = TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC
+            elif a == "3":
+                TEST_CASE = TC_COMPARE_SW_FFMPEG_AND_REF
             else:
                 assert False, "unhandled option"
         elif o in ("-b", "--bit"):

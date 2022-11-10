@@ -13,6 +13,7 @@ FNI_TRACE_FILE_FROM_LIBVA = 6 # trace file from libva
 TC_COMPARE_VAAPI_FFMPEG_AND_REFC = 0
 TC_COMPARE_REFC_AND_VAAPI_REFC = 1 # for CNM internel 
 TC_COMPARE_VAAPI_APP_AND_VAAPI_REFC = 2 # for CNM internel
+TC_COMPARE_SW_FFMPEG_AND_REF = 3 # for CNM internel
 MY_LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri"
 STABLE_LIBVA_DRIVERS_PATH = "/home/ta1-ubuntu/Users/jeff/media-driver/build/media_driver"
 # STABLE_LIBVA_DRIVERS_PATH = MY_LIBVA_DRIVERS_PATH
@@ -113,6 +114,33 @@ def get_file_name_list(stream_name):
     return  file_name_list
 
 
+def decode_swcodec_ffmpeg(file_name_list):
+
+    ret = False 
+    fmt_str = ""
+    stream_name = file_name_list[FNI_STREAM_NAME_IDX]
+    va_stream_name = file_name_list[FNI_VA_STREAM_NAME_IDX]
+    trace_file_name = file_name_list[FNI_TRACE_FILE_FROM_LIBVA]
+    output_name = file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG]
+        
+    if BIT_DEPTH == 8:
+        fmt_str = "yuv420p"
+    else:
+        fmt_str = "yuv420p10le"
+
+    cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -f rawvideo -pix_fmt " + fmt_str + " -vsync passthrough -autoscale 0 -y " + output_name
+    print(get_f_name() + " " + cmdstr)
+    try:
+        if os.system(cmdstr) == 0:
+            ret = True
+    except Exception as e:
+        print(get_f_name() + " Exception str=" + str(e))
+        pass
+
+    global LAST_COMMAND_STR
+    LAST_COMMAND_STR = cmdstr
+    print(get_f_name() + "result is " + str(ret))
+    return ret
 def decode_vaapi_ffmpeg(file_name_list, enable_to_generate_va_bistream):
 
     ret = False 
@@ -318,6 +346,9 @@ def compare_output(file_name_list, test_case):
         golden = file_name_list[FNI_OUTPUT_FILE_VAAPI_CMODEL]
         compare = file_name_list[FNI_OUTPUT_FILE_VAAPI_APP]
     elif test_case == TC_COMPARE_VAAPI_FFMPEG_AND_REFC:
+        golden = file_name_list[FNI_OUTPUT_FILE_CMODEL]
+        compare = file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG]
+    elif test_case == TC_COMPARE_SW_FFMPEG_AND_REF:
         golden = file_name_list[FNI_OUTPUT_FILE_CMODEL]
         compare = file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG]
     else:
