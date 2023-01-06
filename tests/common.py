@@ -19,7 +19,7 @@ STABLE_LIBVA_DRIVERS_PATH = "/home/ta1-ubuntu/Users/jeff/media-driver/build/medi
 # STABLE_LIBVA_DRIVERS_PATH = MY_LIBVA_DRIVERS_PATH
 MY_LIBVA_DRIVER_NAME = "iHD"
 FFMPEG_FILE_PATH="/usr/local/bin/ffmpeg"
-FFMPEG_LOG_LEVEL_STR="verbose" # verbose
+FFMPEG_LOG_LEVEL_STR="verbose" # debug
 
 FILE_EXT_OF_ELEMENTARY_STREAM = [".264", ".h264", ".hevc", ".h265", ".ivf", ".bin", ".265", ".264", ".jsv", ".bit"]
 STREAM_LIST_SKIP_TO_TEST = ["4096x", "3840x", "x4096", "6144x", "Main_8bits_450_HighRes_720x576_r6009"]
@@ -205,6 +205,8 @@ def decode_cnm_vaapi_app(vaapi_app_path, codec_str, file_name_list):
         cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=12 --input=" + va_stream_name + " --output=" + output_name 
     elif "vp9_dec" in codec_str:
         cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=13 --input=" + va_stream_name + " --output=" + output_name 
+    elif "avs2_dec" in codec_str:
+        cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=14 --input=" + va_stream_name + " --output=" + output_name 
     elif "vp8_dec" in codec_str:
         cmdstr = vaapi_app_path + " " + wtl_fmt_str + " --codec=11 --input=" + va_stream_name + " --output=" + output_name 
     elif "vc1_dec" in codec_str:
@@ -276,6 +278,8 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, en
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f h264 " + es_stream_name + " -y"
                     elif "hevc_dec" in codec_str:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f hevc " + es_stream_name + " -y"
+                    elif "avs2_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f avs2 " + es_stream_name + " -y"
                     elif "av1_dec" in codec_str or "vp9_dec" in codec_str:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f ivf " + es_stream_name + " -y"
                     else:
@@ -285,6 +289,8 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, en
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f h264 -vbsf h264_mp4toannexb " + es_stream_name + " -y"
                     elif "hevc_dec" in codec_str:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f hevc -vbsf hevc_mp4toannexb " + es_stream_name + " -y"
+                    elif "avs2_dec" in codec_str:
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f avs2 -vbsf avs2_mp4toannexb " + es_stream_name + " -y"
                     else:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
                        

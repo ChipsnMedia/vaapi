@@ -19,6 +19,8 @@ def test_streams(codec_str, input_file_name, test_case, bit_depth, output_file_n
         refc_file_path = REFC_FILE_ROOT + "/av1_dec"
     elif "vp9_dec" in codec_str:
         refc_file_path = REFC_FILE_ROOT + "/vp9_dec"
+    elif "avs2_dec" in codec_str:
+        refc_file_path = REFC_FILE_ROOT + "/avs2_dec"
     elif "vp8_dec" in codec_str:
         refc_file_path = REFC_FILE_ROOT + "/vp8_dec"
     elif "vc1_dec" in codec_str:
@@ -29,6 +31,8 @@ def test_streams(codec_str, input_file_name, test_case, bit_depth, output_file_n
         refc_file_path = REFC_FILE_ROOT + "/mpeg4_dec"
     elif "h263_dec" in codec_str:
         refc_file_path = REFC_FILE_ROOT + "/h263_dec"
+    elif "avs_dec" in codec_str:
+        refc_file_path = REFC_FILE_ROOT + "/avs_dec"
     else:
         print("+" + get_f_name() + " unknown codec_str = " + codec_str)
         return False
