@@ -258,18 +258,20 @@ cd vaapi-fits
 # #  ./vaapi-fits list | grep test/ffmpeg-vaapi
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/mpeg4.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/avc.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/avc.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/mpeg2.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/h263.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/vp8.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/vc1.py --platform TGL --call-timeout 6000000 -v
-#   ./vaapi-fits -v run test/ffmpeg-vaapi/decode/av1.py --platform TGL --call-timeout 6000000 -v
-# #  ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/vp9.py --platform TGL --call-timeout 6000000 -v
-#   ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/av1.py --platform TGL --call-timeout 6000000 -v
-#  ./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform TGL --call-timeout 6000000 -v
-#  ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v
- ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v --cnm_refc_dir /Stream/work/gregory/vaapi_enc_test_1008
-#  ./vaapi-fits run test/ffmpeg-vaapi/encode/hevc.py --platform KBL --call-timeout 6000000 -v
-#  ./vaapi-fits run test/ffmpeg-vaapi/encode/10bit/hevc.py --platform KBL --call-timeout 6000000 -v
+#./vaapi-fits -v run test/ffmpeg-vaapi/decode/av1.py --platform TGL --call-timeout 6000000 -v
+#./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/vp9.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/av1.py --platform TGL --call-timeout 6000000 -v
+./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v --cnm_refc_dir /Stream/work/gregory/vaapi_enc_test_1008
+# ./vaapi-fits run test/ffmpeg-vaapi/encode/hevc.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits run test/ffmpeg-vaapi/encode/10bit/hevc.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits run test/ffmpeg-vaapi/encode/10bit/avc.py --platform TGL --call-timeout 6000000 -v
 # #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform TGL --call-timeout 6000000
  cd ..
 
