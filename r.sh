@@ -255,7 +255,9 @@ mkdir result
 export VAAPI_FITS_CONFIG_FILE=./config/conformance
 export ITU_T_ASSETS=/Stream/work/ITU_T_ASSETS
 cd vaapi-fits
-# #  ./vaapi-fits list | grep test/ffmpeg-vaapi
+# ./vaapi-fits list | grep test/ffmpeg-vaapi
+# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/avs2.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/avs2.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/mpeg4.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/avc.py --platform TGL --call-timeout 6000000 -v
 # ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/avc.py --platform TGL --call-timeout 6000000 -v
