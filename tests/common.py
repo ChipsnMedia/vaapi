@@ -280,8 +280,12 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, en
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f hevc " + es_stream_name + " -y"
                     elif "avs2_dec" in codec_str:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f avs2 " + es_stream_name + " -y"
-                    elif "av1_dec" in codec_str or "vp9_dec" in codec_str:
-                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f ivf " + es_stream_name + " -y"
+                    elif "vp9_dec" in codec_str:
+                        es_stream_name = es_file_dir + "/" + file_name + ".es" 
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y -f ivf"
+                    elif "av1_dec" in codec_str:
+                        es_stream_name = es_file_dir + "/" + file_name + ".es" 
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y -f av1"
                     else:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
                 else:
@@ -291,6 +295,12 @@ def decode_cnm_ref_c(refc_file_path, codec_str, file_name_list, enable_vaapi, en
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f hevc -vbsf hevc_mp4toannexb " + es_stream_name + " -y"
                     elif "avs2_dec" in codec_str:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy -f avs2 -vbsf avs2_mp4toannexb " + es_stream_name + " -y"
+                    elif "av1_dec" in codec_str:
+                        es_stream_name = es_file_dir + "/" + file_name + ".ivf" 
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y -f av1"
+                    elif "vp9_dec" in codec_str:
+                        es_stream_name = es_file_dir + "/" + file_name + ".ivf" 
+                        cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y -f ivf"
                     else:
                         cmdstr = FFMPEG_FILE_PATH + " -loglevel " + FFMPEG_LOG_LEVEL_STR + " -i " + stream_name + " -vcodec copy " + es_stream_name + " -y"
                        
