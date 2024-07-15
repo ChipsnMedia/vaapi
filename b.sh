@@ -108,7 +108,7 @@ sudo apt install vainfo
 #build ffmpeg 4.4
 cd FFmpeg
 git checkout master
-./configure --disable-x86asm
+./configure --disable-x86asm --enable-libdav1d
 make
 sudo make install # install ffmpeg binary to /usr/local/bin/ffmpeg
 which ffmpeg
