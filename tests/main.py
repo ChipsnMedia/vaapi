@@ -43,7 +43,7 @@ def test_streams(codec_str, input_file_name, test_case, bit_depth, output_file_n
     if output_file_name != "":
         file_name_list[FNI_VA_STREAM_NAME_IDX] = output_file_name
         file_name_list[FNI_TRACE_FILE_FROM_LIBVA] = os.path.dirname(output_file_name) + "/" + os.path.basename(output_file_name) + ".trace.txt"
-        file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG] = os.path.dirname(output_file_name) + "/" + os.path.basename(output_file_name) + ".vaapi.ffmpe.yuv"
+        file_name_list[FNI_OUTPUT_FILE_VAAPI_FFMPEG] = os.path.dirname(output_file_name) + "/" + os.path.basename(output_file_name) + ".vaapi.ffmpeg.yuv"
         ret = decode_vaapi_ffmpeg(file_name_list, True)
         if ret == False:
             print("+" + get_f_name() + " fail to generate ivf file")

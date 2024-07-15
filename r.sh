@@ -30,7 +30,7 @@ groups ${USER}
 # sudo gpasswd -a ${USER} render
 # newgrp render
 
-export LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
+export LIBVA_DRIVERS_PATH=/usr/local/lib/dri
 # export LIBVA_DRIVERS_PATH=/home/ta-ubuntu/Users/jeff/vaapi/media-driver/build/media_driver
 export LIBVA_DRIVER_NAME=iHD
 # export LIBVA_DRIVER_NAME=i965  # for gstreamer-vaapi v1.14.5
@@ -40,9 +40,19 @@ rm -rf result
 mkdir result
 
 
+# export LIBVA_DRIVERS_PATH=/home/ta1-ubuntu/Users/gregory/media-driver/build/media_driver
+# export LIBVA_DRIVER_NAME=iHD
+# export LIBVA_TRACE=/home/ta1-ubuntu/Users/Stream/avc/ivf/CABA3_SVA_B.264.va_trace.txt
+# export LIBVA_VA_BITSTREAM=/home/ta1-ubuntu/Users/Stream/avc/ivf/CABA3_SVA_B.264.ivf
+# ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /home/ta1-ubuntu/Users/Stream/avc/CABA3_SVA_B.264 -f rawvideo -pix_fmt yuv420p -vsync passthrough -autoscale 0 -y /home/ta1-ubuntu/Users/Stream/avc/CABA3_SVA_B.264.yuv
+
+
 # decoder
+# cd /home/ta1-ubuntu/Users/gregory/vaapi_prj/vaapi/tests
+# python3 main.py --codec=av1_dec --input=/home/ta1-ubuntu/Users/Stream/av1/AV1-10BIT-8K-24FPS-cut.mp4 --output=/home/ta1-ubuntu/Users/Stream/av1/AV1-10BIT-8K-24FPS-cut.mp4.ivf
+# python3 main.py --codec=avc_dec --input=/home/ta1-ubuntu/Users/Stream/avc/CABA3_SVA_B.264 --output=/home/ta1-ubuntu/Users/Stream/avc/CABA3_SVA_B.264.ivf
 
-
+# ./av1_dec -y 0 --codec av1_dec --vaapi -i /home/ta1-ubuntu/Users/Stream/av1/Stream/work/ITU_T_ASSETS/av1/ivf/Main_8bits_451_HighRes_1280x720_r6009.ivf.ivf -o /Stream/work/ITU_T_ASSETS/av1/yuv/Main_8bits_451_HighRes_1280x720_r6009.ivf.vaapi.cmodel.yuv
 
 # export LIBVA_VA_BITSTREAM=/Stream/work/gregory/DXVAContent/h264/ivf/H264formatChange_1920x1088_High_at_L4.1_1280x720_Main.264.ivf
 # /usr/local/bin/ffmpeg -loglevel verbose -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i /Stream/work/gregory/DXVAContent/h264/H264formatChange_1920x1088_High_at_L4.1_1280x720_Main.264 -f rawvideo -pix_fmt yuv420p /Stream/work/gregory/DXVAContent/h264/yuv/H264formatChange_1920x1088_High_at_L4.1_1280x720_Main.264.vaapi.ffmpeg.yuv -y
@@ -259,20 +269,24 @@ cd vaapi-fits
 # ./vaapi-fits -v run test/ffmpeg-vaapi/decode/avs2.py --platform TGL --call-timeout 6000000 -v
 # ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/avs2.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/mpeg4.py --platform TGL --call-timeout 6000000 -v
-#./vaapi-fits -v run test/ffmpeg-vaapi/decode/avc.py --platform TGL --call-timeout 6000000 -v
-# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/avc.py --platform TGL --call-timeout 6000000 -v
+./vaapi-fits -v run test/ffmpeg-vaapi/decode/avc.py --platform TGL --call-timeout 6000000 -v
+./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/avc.py --platform TGL --call-timeout 6000000 -v
+./vaapi-fits -v run test/ffmpeg-vaapi/decode/hevc.py --platform TGL --call-timeout 6000000 -v
+./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/hevc.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/mpeg2.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/h263.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/vp8.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/vc1.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/av1.py --platform TGL --call-timeout 6000000 -v
+#./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/av1.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/avs2.py --platform TGL --call-timeout 6000000 -v
+# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/avs2.py --platform TGL --call-timeout 6000000 -v
 #./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/vp9.py --platform TGL --call-timeout 6000000 -v
-# ./vaapi-fits -v run test/ffmpeg-vaapi/decode/10bit/av1.py --platform TGL --call-timeout 6000000 -v
-./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform TGL --call-timeout 6000000 -v
+#./vaapi-fits -v run test/ffmpeg-vaapi/decode --platform TGL --call-timeout 6000000 -v
 # ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v
 # ./vaapi-fits run test/ffmpeg-vaapi/encode/avc.py --platform TGL --call-timeout 6000000 -v --cnm_refc_dir /Stream/work/gregory/vaapi_enc_test_1008
-# ./vaapi-fits run test/ffmpeg-vaapi/encode/hevc.py --platform TGL --call-timeout 6000000 -v
-# ./vaapi-fits run test/ffmpeg-vaapi/encode/10bit/hevc.py --platform TGL --call-timeout 6000000 -v
+#./vaapi-fits run test/ffmpeg-vaapi/encode/hevc.py --platform TGL --call-timeout 6000000 -v
+#./vaapi-fits run test/ffmpeg-vaapi/encode/10bit/hevc.py --platform TGL --call-timeout 6000000 -v
 # ./vaapi-fits run test/ffmpeg-vaapi/encode/10bit/avc.py --platform TGL --call-timeout 6000000 -v
 # #  ./vaapi-fits run test/ffmpeg-vaapi/transcode --platform TGL --call-timeout 6000000
  cd ..

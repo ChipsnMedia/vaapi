@@ -68,7 +68,7 @@ cmake --version
 # build libva
 cd libva
 git checkout master
-./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
+./autogen.sh
 make -j$(nproc)
 sudo make install
 cd ..
@@ -77,7 +77,7 @@ cd ..
 cd gmmlib
 git checkout master
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu ..
+cmake ..
 make VERBOSE=1 -j$(nproc)
 sudo make install
 cd ..
@@ -85,10 +85,10 @@ cd ..
 
 # build media-driver
 cd media-driver
-git checkout master
+# git checkout master
+git checkout vpu-media-br-enc
 mkdir build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu \
-    -DCMAKE_C_FLAGS_RELEASE="-O2 -Wformat -Wformat-security -Wall -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong" \
+cmake -DCMAKE_C_FLAGS_RELEASE="-O2 -Wformat -Wformat-security -Wall -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong" \
     -DCMAKE_CXX_FLAGS_RELEASE="-O2 -Wformat -Wformat-security -Wall -Werror -D_FORTIFY_SOURCE=2 -fstack-protector-strong" \
     ..
 make -j$(nproc)
@@ -99,7 +99,7 @@ cd ..
 # build libva-utils
 cd libva-utils
 git checkout master
-./autogen.sh --enable-tests --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu
+./autogen.sh --enable-tests
 make -j$(nproc)
 sudo make install
 
